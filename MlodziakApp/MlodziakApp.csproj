@@ -1,0 +1,160 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0;net8.0-android;net8.0-ios</TargetFrameworks>
+		<CompileSdkVersion>34</CompileSdkVersion>
+		<!-- API Level for compiling -->
+		<TargetSdkVersion>34</TargetSdkVersion>
+		<!-- API Level your app is targeting -->
+		<MinSdkVersion>28</MinSdkVersion>
+		<!-- Minimum API Level your app supports -->
+
+		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
+
+		<OutputType Condition="'$(TargetFramework)' != 'net8.0'">Exe</OutputType>
+		<RootNamespace>MlodziakApp</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<!-- Display name -->
+		<ApplicationTitle>MlodziakApp</ApplicationTitle>
+
+		<!-- App Identifier -->
+		<ApplicationId>com.company.MlodziakApp</ApplicationId>
+
+		<!-- Versions -->
+		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">28.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+	  <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- App Icon -->
+		<MauiIcon Include="Resources\AppIcon\appicon.png" ForegroundScale="0.70" />
+		
+		<!-- Splash Screen -->
+		<MauiSplashScreen Include="Resources\Splash\logo.jpg" Color="#000000" BaseSize="128,128" />
+
+		<!-- Images -->
+		<MauiImage Include="Resources\Images\*" />
+		<!-- Custom Fonts -->
+		<MauiFont Include="Resources\Fonts\*" />
+
+		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="appsettings.Development.json" />
+	  <None Remove="Resources\AppLogo\application_logo_01.png" />
+	  <None Remove="Resources\Images\Categories\Park_Kategoria_01.jpg" />
+	  <None Remove="Resources\Images\exploration_page_icon_black_alpha_48x48.png" />
+	  <None Remove="Resources\Images\Icons\MapIcons\map_icon_01.png" />
+	  <None Remove="Resources\Images\Icons\TabBarIcons\settings_page_icon_black_48x48.png" />
+	  <None Remove="Resources\Images\Locations\Poniatowski_Park_01.jpg" />
+	  <None Remove="Resources\Images\PhysicalLocations\bike_park_01.jpg" />
+	  <None Remove="Resources\Images\PhysicalLocations\Fontanna_03.jpg" />
+	  <None Remove="Resources\Images\PhysicalLocations\most_zakochanych_02.jpg" />
+	  <None Remove="Resources\Titbits\Titbits.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Auth0.OidcClient.MAUI" Version="1.0.1" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="9.1.1" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.71" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.71" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="8.0.71" />
+		<PackageReference Include="Microsoft.Maui.Essentials" Version="8.0.71" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Plugin.Firebase" Version="3.1.1" />
+		<PackageReference Include="Plugin.Firebase.Crashlytics" Version="3.1.0" />
+		<PackageReference Include="Plugin.LocalNotification" Version="11.1.0" />
+		<PackageReference Include="Refit" Version="8.0.0" />
+		<PackageReference Include="Refit.HttpClientFactory" Version="7.2.22" />
+	</ItemGroup>
+
+	<!--Resolving conflict for Plugin.Firebase-->
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android'">
+		<PackageReference Include="Xamarin.AndroidX.Preference">
+			<Version>1.2.1.11</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<!-- For missing googleservicesjson action build-->
+	<ItemGroup>
+		<GoogleServicesJson Include="Platforms\Android\google-services.json" />
+	</ItemGroup>
+	
+	<!-- For missing androidresource action build-->
+	<ItemGroup>
+        <AndroidResource Include="Platforms\Android\Resources\values\strings.xml" />
+    </ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Include="appsettings.Development.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Include="Resources\Titbits\Titbits.json" />
+	</ItemGroup>
+	
+
+	<ItemGroup>
+		<ProjectReference Include="..\DataAccess\DataAccess.csproj" />
+		<ProjectReference Include="..\SharedModels\SharedModels.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Views\InvitiationPage.xaml.cs">
+		  <DependentUpon>InvitiationPage.xaml</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<MauiXaml Update="Views\ExplorationPage.xaml">
+			<Generator></Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\InvitiationPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\MapPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\SettingsPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Views\SettingsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiImage Include="Resources\AppLogo\application_logo_01.png" />
+	  <MauiImage Include="Resources\Images\Categories\park_kategoria_01.jpg" />
+	  <MauiImage Include="Resources\Images\Icons\MapIcons\map_icon_01.png" />
+	  <MauiImage Include="Resources\Images\Icons\TabBarIcons\exploration_page_icon_black_alpha_48x48.png" />
+	  <MauiImage Include="Resources\Images\Icons\TabBarIcons\settings_page_icon_black_48x48.png" />
+	  <MauiImage Include="Resources\Images\Locations\poniatowski_park_01.jpg" />
+	  <MauiImage Include="Resources\Images\PhysicalLocations\bike_park_01.jpg" />
+	  <MauiImage Include="Resources\Images\PhysicalLocations\fontanna_03.jpg" />
+	  <MauiImage Include="Resources\Images\PhysicalLocations\most_zakochanych_02.jpg" />
+	</ItemGroup>
+
+</Project>

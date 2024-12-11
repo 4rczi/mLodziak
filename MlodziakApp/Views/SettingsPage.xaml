@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MlodziakApp.Views.SettingsPage"
+             xmlns:viewmodel="clr-namespace:MlodziakApp.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#e5e8ef">
+    <VerticalStackLayout Margin="10">
+        
+        <Frame Padding="1" CornerRadius="10">
+            <Grid x:Name="SettingsPageGrid"
+                    ColumnDefinitions="Auto,*"
+                    RowDefinitions="20,*,*,*,*,*,*,*,*,20"
+                    Margin="0,0,0,0"
+                  Padding="5"
+                  BackgroundColor="#e5e8ef">
+
+                <Label Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" HorizontalTextAlignment="Center" Text="Ustawienia aplikacji:"></Label>
+                <Label Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" HorizontalTextAlignment="Center" Text=" " ></Label>
+                <Label Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" HorizontalTextAlignment="Start" Text="Podstawowe informacje:" ></Label>
+
+                <Label Grid.Column="0" Grid.Row="4" HorizontalTextAlignment="Start" Text="Id użytkownika: " ></Label>
+                <Label Grid.Column="1" Grid.Row="4" HorizontalTextAlignment="Start" Text="{Binding UserId}"></Label>
+
+                <Label Grid.Column="0" Grid.Row="5" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Text="Id sesji: "></Label>
+                <Label Grid.Column="1" Grid.Row="5" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Text="{Binding SessionId}"></Label>
+
+                <Label Grid.Column="0" Grid.Row="6" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Text="Wersja aplikacji: "></Label>
+                <Label Grid.Column="1" Grid.Row="6" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Text="{Binding AppVersion}"></Label>
+
+                <Button Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="7" Text="Wyloguj" Margin="5" BackgroundColor="#a3b1d0" Command="{Binding LogOutCommand}"></Button>
+
+            </Grid>
+        </Frame>
+    </VerticalStackLayout>
+</ContentPage>

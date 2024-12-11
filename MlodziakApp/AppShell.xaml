@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="MlodziakApp.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:MlodziakApp"
+    Shell.FlyoutBehavior="Disabled"
+    Title="MlodziakApp">
+
+    <ShellContent
+        Title="InvitationPage"
+        ContentTemplate="{DataTemplate local:Views.InvitationPage}"
+        Route="InvitationPage"/>
+
+    <TabBar>
+        <ShellContent
+         Title="Eksploruj"
+         ContentTemplate="{DataTemplate local:Views.ExplorationPage}"
+         Route="ExplorationPage"
+         Icon="Resources/Images/Icons/TabBarIcons/exploration_page_icon_black_alpha_48x48.png" />
+
+        <ShellContent
+         Title="Ustawienia"
+         ContentTemplate="{DataTemplate local:Views.SettingsPage}"
+         Route="SettingsPage"
+        Icon="Resources/Images/Icons/TabBarIcons/settings_page_icon_black_48x48.png" />
+    </TabBar>
+
+
+</Shell>

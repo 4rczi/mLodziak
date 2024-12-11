@@ -1,0 +1,58 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MlodziakApp.Views.MapPage"
+             xmlns:viewmodel="clr-namespace:MlodziakApp.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps"
+             xmlns:loc="clr-namespace:Microsoft.Maui.Devices.Sensors;assembly=Microsoft.Maui.Essentials">
+
+    <StackLayout>
+        <Grid x:Name="mapGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" ColumnDefinitions="*,Auto" RowDefinitions="*,Auto" Margin="5">
+            <ContentView Grid.Column="0"
+                         Grid.Row="0"
+                         Content="{Binding Map}">
+            </ContentView>
+                   
+            <CollectionView 
+                x:Name="PhysicalLocationCollection"
+                Grid.Column="0"
+                Grid.Row="1"
+                ItemsLayout="VerticalList"
+                SelectionMode="None"
+                ItemsSource="{Binding SelectedPhysicalLocationModel}"
+                IsVisible="{Binding IsPhysicalLocationViewVisible}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Margin="5"
+                               Padding="5"
+                               BackgroundColor="White">
+                            <VerticalStackLayout>
+                                <Frame Padding="3">
+                                    <Grid x:Name="physicalLocationGrid" ColumnDefinitions="*,Auto,Auto">
+                                        <Label Grid.Column="0"
+                                               Text="{Binding Name}"
+                                               FontAttributes="Bold"
+                                               VerticalOptions="Center"
+                                               />
+                                    </Grid>
+                                </Frame>
+                                <Image Source="{Binding ImagePath}"
+                                       Aspect="Fill"
+                                       HeightRequest="200">
+                                </Image>
+                                <Frame Padding="5">
+                                    <StackLayout>
+                                        <Label Text="Opis: "></Label>
+                                        <Label Text="{Binding Description}"/>
+                                    </StackLayout>
+                                </Frame>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </StackLayout>
+    
+    
+</ContentPage>

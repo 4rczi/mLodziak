@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:MlodziakApp.ViewModels"
+             x:Class="MlodziakApp.Views.ExplorationPage"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps"
+             xmlns:converters="clr-namespace:MlodziakApp.Converters"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#e5e8ef">
+    <!-- Style="{StaticResource ContentPageStyle}"> !-->
+      
+    <ContentPage.Resources>
+        <converters:MultiConverter x:Key="MultiConverter" />
+    </ContentPage.Resources>
+
+    <ScrollView Margin="20" VerticalOptions="FillAndExpand" VerticalScrollBarVisibility="Always">
+        <StackLayout>
+            <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" />
+            <Button Grid.Column="1"
+                    Grid.Row="1"
+                    Text="Powrót"
+                    Command="{Binding BackCommand}"
+                    IsVisible="{Binding BackButtonVisibility}"
+                    BackgroundColor="#627ebb"
+                    MaximumHeightRequest="40"/>
+
+            <Grid x:Name="ExplorationPageGrid"
+                  ColumnDefinitions="5,*,5"
+                  RowDefinitions="5,*,*,5"
+                  Padding="0"
+                  BackgroundColor="#F4F6FB">
+                <!-- Category -->
+                <CollectionView x:Name="CategoriesCollection"
+                                Grid.Column="1"
+                                Grid.Row="2"
+                                ItemsLayout="VerticalList"
+                                SelectionMode="Single"
+                                ItemsSource="{Binding CategoryModels}"
+                                SelectedItem="{Binding SelectedCategory}"
+                                IsVisible="{Binding IsCategoryViewVisible}"
+                                BackgroundColor="#F4F6FB">
+                    <!-- obwódka kolor-->
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame 
+                                   Padding="0"
+                                   BackgroundColor="#F4F6FB"
+                                   CornerRadius="5">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.SelectedCategoryChangedCommand}"
+                                                          Buttons="Primary"
+                                                          CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+                                <VerticalStackLayout>
+                                    <!-- Kato odwiedzono kolor-->
+                                    <Frame Padding="0" BackgroundColor="#F4F6FB">
+                                        <Frame.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.SelectedCategoryChangedCommand}"
+                                                                  Buttons="Primary"
+                                                                  CommandParameter="{Binding .}" />
+                                        </Frame.GestureRecognizers>
+                                        <Grid x:Name="categoryGrid" ColumnDefinitions="*,Auto,Auto,Auto,Auto">
+                                            <Label Grid.Column="0" Text="{Binding Name}" FontSize="15" FontAttributes="Bold"/>
+                                            <Label Grid.Column="1" Text="Odwiedzono: " FontSize="15" FontAttributes="Bold" HorizontalOptions="FillAndExpand"/>
+                                            <Label Grid.Column="2" Text="{Binding VisitedLocationsCount}" FontSize="15" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
+                                            <Label Grid.Column="3" Text="/" FontSize="15" FontAttributes="Bold"/>
+                                            <Label Grid.Column="4" Text="{Binding LocationsCount}" FontSize="15" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
+                                        </Grid>
+                                    </Frame>
+                                    <Frame CornerRadius="10" Padding="0">
+                                        <Image Source="{Binding ImagePath}"
+                                               Aspect="AspectFill"
+                                               HorizontalOptions="Fill"
+                                               VerticalOptions="Fill"
+                                               HeightRequest="250">
+                                            <Image.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.SelectedCategoryChangedCommand}"
+                                                                      Buttons="Primary"
+                                                                      CommandParameter="{Binding .}" />
+                                            </Image.GestureRecognizers>
+                                        </Image>
+                                    </Frame>
+                                    <!-- -->
+                                    <Frame Padding="5" BackgroundColor="#F4F6FB">
+                                        <Frame.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.SelectedCategoryChangedCommand}"
+                                                                  Buttons="Primary"
+                                                                  CommandParameter="{Binding .}" />
+                                        </Frame.GestureRecognizers>
+                                        <StackLayout>
+                                            <Label Text="Opis: " FontAttributes="Bold" ></Label>
+                                            <Label Text=" " ></Label>
+                                            <Label Text="{Binding Description}"/>
+                                        </StackLayout>
+                                    </Frame>
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                    <CollectionView.Behaviors>
+                        <toolkit:EventToCommandBehavior EventName="SelectionChanged"
+                                                        Command="{Binding SelectedCategoryChangedCommand}"
+                                                        CommandParameter="{Binding SelectedItem, Source={x:Reference CategoriesCollection}}" />
+                    </CollectionView.Behaviors>
+                </CollectionView>
+            </Grid>
+
+            <!-- Location -->
+            <CollectionView x:Name="LocationsCollection"
+                            ItemsLayout="VerticalList"
+                            SelectionMode="None"
+                            ItemsSource="{Binding DisplayedLocationModels}"
+                            IsVisible="{Binding IsLocationViewVisible}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Margin="0"
+                               Padding="0"
+                               BackgroundColor="#F4F6FB">
+                            <VerticalStackLayout>
+                                <Frame Padding="3" CornerRadius="10" BackgroundColor="#F4F6FB">
+                                    <Grid x:Name="locationGrid" ColumnDefinitions="*,Auto,Auto,Auto,Auto">
+                                        <Label Grid.Column="0" Text="{Binding Name}" FontSize="15" FontAttributes="Bold"/>
+                                        <Label Grid.Column="1" Text="Odwiedzono: " FontSize="15" FontAttributes="Bold"/>
+                                        <Label Grid.Column="2" Text="{Binding VisitedPhysicalLocationsCount}" FontSize="15" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
+                                        <Label Grid.Column="3" Text="/" FontSize="15" FontAttributes="Bold"/>
+                                        <Label Grid.Column="4" Text="{Binding PhysicalLocationsCount}" FontSize="15" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
+                                    </Grid>
+                                </Frame>
+                                <Grid x:Name="locationGrid2" ColumnDefinitions="*,Auto" RowDefinitions="*,Auto">
+                                    <Image Grid.Column="0"                                          
+                                           Grid.Row="0"
+                                           HorizontalOptions="Fill"
+                                           VerticalOptions="Fill"
+                                           Aspect="Fill"
+                                           Source="{Binding ImagePath}">
+                                    </Image>
+                                </Grid>
+
+                                <Frame Padding="5" BackgroundColor="#F4F6FB">
+                                    <StackLayout>
+                                        <Grid ColumnDefinitions="*,*" RowDefinitions="*,*,*, *">
+                                            <Button Grid.ColumnSpan="2"
+                                                    Grid.Row="0"
+                                                    ImageSource="Resources/Images/Icons/MapIcons/map_icon_01.png"
+                                                    MaximumHeightRequest="40"
+                                                    Padding="0"
+                                                    ContentLayout="Right,10"
+                                                    Text="Pokaż na mapie:"
+                                                    BackgroundColor="#627ebb"
+                                                    Command="{Binding OpenMapCommand,
+                                                    Source={RelativeSource AncestorType={x:Type viewmodel:ExplorationPageViewModel}}}">
+                                                <Button.CommandParameter>
+                                                    <MultiBinding Converter="{StaticResource MultiConverter}">
+                                                        <Binding Path="Id"/>
+                                                        <Binding Path="CategoryId"/>
+                                                        <Binding Path="Latitude"/>
+                                                        <Binding Path="Longitude"/>
+                                                        <Binding Path="ZoomLevel"/>
+                                                    </MultiBinding>
+                                                </Button.CommandParameter>
+                                            </Button>
+                                            <Label Grid.ColumnSpan="2" Grid.Row="1"  Text="Opis: " FontAttributes="Bold"></Label>
+                                            <Label Grid.ColumnSpan="2" Grid.Row="2"  Text=""></Label>
+                                            <Label Grid.ColumnSpan="2" Grid.Row="3"  Text="{Binding Description}"/>
+                                        </Grid>
+                                    </StackLayout>
+                                </Frame>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

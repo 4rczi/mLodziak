@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "2054616425",
+    "project_id": "mlodziak",
+    "storage_bucket": "mlodziak.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:2054616425:android:f29cd0a693ef348402b9f8",
+        "android_client_info": {
+          "package_name": "com.company.MlodziakApp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtO6ZjjbsdLsP3zaHfI925YGMoYX0nYfk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
