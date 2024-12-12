@@ -43,6 +43,7 @@
 
                 <Label Grid.Column="1"
                        Grid.Row="5"
+                       Padding="10,0,0,0"
                        Text="{Binding Titbit}"
                        FontSize="20"
                        HorizontalOptions="CenterAndExpand"

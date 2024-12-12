@@ -8,8 +8,7 @@
              xmlns:converters="clr-namespace:MlodziakApp.Converters"
              Shell.NavBarIsVisible="False"
              BackgroundColor="#e5e8ef">
-    <!-- Style="{StaticResource ContentPageStyle}"> !-->
-      
+
     <ContentPage.Resources>
         <converters:MultiConverter x:Key="MultiConverter" />
     </ContentPage.Resources>
@@ -26,13 +25,13 @@
                     MaximumHeightRequest="40"/>
 
             <Grid x:Name="ExplorationPageGrid"
-                  ColumnDefinitions="5,*,5"
-                  RowDefinitions="5,*,*,5"
+                  ColumnDefinitions="*"
+                  RowDefinitions="*,*"
                   Padding="0"
                   BackgroundColor="#F4F6FB">
                 <!-- Category -->
                 <CollectionView x:Name="CategoriesCollection"
-                                Grid.Column="1"
+                                Grid.Column="0"
                                 Grid.Row="2"
                                 ItemsLayout="VerticalList"
                                 SelectionMode="Single"
@@ -40,20 +39,17 @@
                                 SelectedItem="{Binding SelectedCategory}"
                                 IsVisible="{Binding IsCategoryViewVisible}"
                                 BackgroundColor="#F4F6FB">
-                    <!-- obwódka kolor-->
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Frame 
                                    Padding="0"
-                                   BackgroundColor="#F4F6FB"
-                                   CornerRadius="5">
+                                   BackgroundColor="#F4F6FB">
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.SelectedCategoryChangedCommand}"
                                                           Buttons="Primary"
                                                           CommandParameter="{Binding .}" />
                                 </Frame.GestureRecognizers>
                                 <VerticalStackLayout>
-                                    <!-- Kato odwiedzono kolor-->
                                     <Frame Padding="0" BackgroundColor="#F4F6FB">
                                         <Frame.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.SelectedCategoryChangedCommand}"
@@ -81,7 +77,6 @@
                                             </Image.GestureRecognizers>
                                         </Image>
                                     </Frame>
-                                    <!-- -->
                                     <Frame Padding="5" BackgroundColor="#F4F6FB">
                                         <Frame.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.SelectedCategoryChangedCommand}"
@@ -118,7 +113,7 @@
                                Padding="0"
                                BackgroundColor="#F4F6FB">
                             <VerticalStackLayout>
-                                <Frame Padding="3" CornerRadius="10" BackgroundColor="#F4F6FB">
+                                <Frame Padding="2" CornerRadius="10" BackgroundColor="#F4F6FB">
                                     <Grid x:Name="locationGrid" ColumnDefinitions="*,Auto,Auto,Auto,Auto">
                                         <Label Grid.Column="0" Text="{Binding Name}" FontSize="15" FontAttributes="Bold"/>
                                         <Label Grid.Column="1" Text="Odwiedzono: " FontSize="15" FontAttributes="Bold"/>
