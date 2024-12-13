@@ -50,7 +50,6 @@ namespace MlodziakApp.ApiRequests
             }
             catch (Exception ex)
             {
-                // Handle other exceptions
                 await _applicationLoggingRequests.LogAsync(
                     "Error",
                     "Exception caught",
