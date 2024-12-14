@@ -18,7 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace MlodziakApp.ApiRequests
 {
-    public class NotificationRequests
+    public class NotificationRequests : INotificationRequests
     {
         private readonly IApplicationLoggingRequests _applicationLoggingRequests;
         private readonly INotificationApiCalls _notificationApiCalls;
@@ -39,8 +39,8 @@ namespace MlodziakApp.ApiRequests
                 return response.IsNullOrEmpty();
             }
 
-            catch(ApiException apiEx)
-            {         
+            catch (ApiException apiEx)
+            {
                 await _applicationLoggingRequests.LogAsync(
                     "Warning",
                     "Unsuccessful code returned",
