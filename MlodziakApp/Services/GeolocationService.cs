@@ -17,7 +17,7 @@ using Location = Microsoft.Maui.Devices.Sensors.Location;
 
 namespace MlodziakApp.Services
 {
-    public class GeolocationService : IGeolocationService, IRequiresSession
+    public class GeolocationService : IGeolocationService
     {
         private readonly ISessionService _sessionService;
         private readonly ISecureStorageService _secureStorageService;
@@ -28,9 +28,6 @@ namespace MlodziakApp.Services
         private bool _isRunning;
         private CancellationTokenSource _cts;
 
-        public event Func<PhysicalLocationModel, Task>? OnPhysicalLocationVisited;
-
-
         public GeolocationService(ISessionService sessionService,
                                   ISecureStorageService secureStorageService,
                                   IApplicationLoggingRequests applicationLogger,
@@ -40,8 +37,21 @@ namespace MlodziakApp.Services
             _secureStorageService = secureStorageService;
             _applicationLogger = applicationLogger;
             _userGeolocationChangedHandler = userGeolocationChangedHandler;
+
+            WeakReferenceMessenger.Default.Register<SessionExpiredMessage>(this, OnSessionExpiredMessageReceived);
+            WeakReferenceMessenger.Default.Register<SessionInitializedMessage>(this, OnSessionInitializedMessageReceived);
         }
 
+        private async void OnSessionInitializedMessageReceived(object recipient, SessionInitializedMessage message)
+        {
+            await HandleSessionInitializedAsync();
+        }
+
+        private async void OnSessionExpiredMessageReceived(object recipient, SessionExpiredMessage message)
+        {
+            await StopTrackingUserLocationAsync();
+            message.CompletionSource.TrySetResult(true);
+        }
 
         public async Task<Location?> GetUserGeolocationAsync(GeolocationAccuracy accuracy, CancellationToken cancellationToken)
         {
@@ -63,12 +73,6 @@ namespace MlodziakApp.Services
                 await _applicationLogger.LogAsync("Warning", "Exception caught", "", ex.Message, this.GetType().Name, nameof(GetUserGeolocationAsync), await _secureStorageService.GetUserIdAsync() ?? "Unknown", await _secureStorageService.GetSessionIdAsync() ?? "Unknown", "", DateTime.UtcNow, DateTime.UtcNow);
                 return null;
             }
-        }
-
-        public void SubscribeToEvents()
-        {
-            _sessionService.OnSessionExpired += HandleSessionExpiredAsync;
-            _sessionService.OnSessionInitialized += HandleSessionInitializedAsync;
         }
 
         private async IAsyncEnumerable<Location?> YieldUserLocationAsync(GeolocationAccuracy accuracy, int requestIntervalInSeconds, [EnumeratorCancellation] CancellationToken trackingCancellationToken)
@@ -149,7 +153,7 @@ namespace MlodziakApp.Services
             {
                 try
                 {
-                    await StartTrackingUserLocationAsync(GeolocationAccuracy.Best, Constants.LongRunningTasks.GeolocationCheckRequestIntervalInSeconds);
+                    await StartTrackingUserLocationAsync(GeolocationSettings.GeolocationAccuracy, GeolocationSettings.GeolocationRequestIntervalInSeconds);
                 }
 
                 catch (Exception ex)

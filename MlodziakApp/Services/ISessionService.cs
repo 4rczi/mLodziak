@@ -9,8 +9,5 @@ namespace MlodziakApp.Services
         Task<(bool isSuccess, string? accessToken, string? refreshToken, string? sessionId, string? userId)> GetSessionDataAsync();
         Task<bool> SetSessionDataAsync(string sessionId, string userId, string accessToken, string refreshToken);
         Task<bool> RemoveSessionDataAsync();
-        
-        event Func<Task>? OnSessionExpired;
-        event Func<Task>? OnSessionInitialized;
     }
 }

@@ -33,9 +33,6 @@ namespace MlodziakApp
 
         private void InitializeServices()
         {
-            var geolocationService = _serviceProvider.GetService<IGeolocationService>();
-            geolocationService.SubscribeToEvents();
-
             var pushNotificationService = _serviceProvider.GetService<PushNotificationService>();
           
         }

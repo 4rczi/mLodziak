@@ -1,11 +1,13 @@
 ﻿using Auth0.OidcClient;
 using Azure.Core;
 using Azure.Identity;
+using CommunityToolkit.Mvvm.Messaging;
 using DataAccess.Entities;
 using IdentityModel.OidcClient.Results;
 using Microsoft.IdentityModel.Tokens;
 using MlodziakApp.ApiRequests;
 using MlodziakApp.Logic.Session;
+using MlodziakApp.Messages;
 using MlodziakApp.Views;
 using Newtonsoft.Json.Linq;
 using System;
@@ -27,7 +29,6 @@ namespace MlodziakApp.Services
         private readonly IPopUpService _popUpService;
         private readonly IApplicationLoggingRequests _applicationLogger;
 
-        public event Func<Task>? OnSessionExpired;
         public event Func<Task>? OnSessionInitialized;
 
         public SessionService(
@@ -52,7 +53,9 @@ namespace MlodziakApp.Services
 
             if (isSessionValid && autoLoginCheck)
             {
-                OnSessionInitialized?.Invoke();
+                // We dont await handlers' results, cause geolocation service run in an infite loop
+                WeakReferenceMessenger.Default.Send(new SessionInitializedMessage(true));
+
                 await _applicationLogger.LogAsync("Information", "Sucessfully auto logged in", "", "", this.GetType().Name, nameof(ValidateSessionAsync), userId!, sessionId!, "", DateTime.UtcNow, DateTime.UtcNow);
             }
 
@@ -61,11 +64,13 @@ namespace MlodziakApp.Services
 
         public async Task HandleInvalidSessionAsync(bool isLoggedIn, bool notifyUser)
         {
-            if (isLoggedIn && OnSessionExpired != null)
+            if (isLoggedIn)
             {
-                // Asynchronously waits for listener classes handlers to complete
-                // Ensuring that services will stop before HandleInvalidSessionAsync()
-                await Task.WhenAll(OnSessionExpired.GetInvocationList().Cast<Func<Task>>().Select(handler => handler.Invoke()));
+                var sessionExpiredMessage = new SessionExpiredMessage(false);             
+                WeakReferenceMessenger.Default.Send(sessionExpiredMessage);
+
+                // Asynchronously wait for listeners' handlers to complete
+                await sessionExpiredMessage.CompletionSource.Task;
             }
 
             await _sessionHandler.HandleInvalidSessionAsync();
@@ -88,7 +93,9 @@ namespace MlodziakApp.Services
 
             await _applicationLogger.LogAsync("Information", "Initialized session", "", "", this.GetType().Name, nameof(InitializeSessionAsync), userId, sessionId!, "", DateTime.UtcNow, DateTime.UtcNow);
 
-            OnSessionInitialized?.Invoke();
+            // We dont await handlers' results, cause geolocation service run in an infite loop
+            WeakReferenceMessenger.Default.Send(new SessionInitializedMessage(false));
+
             return true;
         }
 

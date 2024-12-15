@@ -7,9 +7,5 @@ namespace MlodziakApp.Services
     {
         Task StartTrackingUserLocationAsync(GeolocationAccuracy accuracy, int requestIntervalInSeconds);
         Task StopTrackingUserLocationAsync();
-
-        event Func<PhysicalLocationModel, Task>? OnPhysicalLocationVisited;
-
-        void SubscribeToEvents();
     }
 }
