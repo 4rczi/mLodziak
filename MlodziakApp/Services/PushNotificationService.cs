@@ -16,18 +16,14 @@ namespace MlodziakApp.Services
 {
     public class PushNotificationService
     {
-        private readonly IGeolocationService _geolocationService;
         private readonly ISecureStorageService _secureStorageService;
         private readonly IApplicationLoggingRequests _applicationLoggingRequests;
         private readonly IEnumerable<INotificationHandler> _notificationHandlers;
 
-        public PushNotificationService(IGeolocationService geolocationService,
-                                       ISecureStorageService secureStorageService,
+        public PushNotificationService(ISecureStorageService secureStorageService,
                                        IApplicationLoggingRequests applicationLoggingRequests,
-                                       IEnumerable<INotificationHandler> notificationHandlers
-                                      )
+                                       IEnumerable<INotificationHandler> notificationHandlers)
         {
-            _geolocationService = geolocationService;
             _secureStorageService = secureStorageService;
             _applicationLoggingRequests = applicationLoggingRequests;
             _notificationHandlers = notificationHandlers;

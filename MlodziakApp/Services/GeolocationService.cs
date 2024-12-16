@@ -19,21 +19,17 @@ namespace MlodziakApp.Services
 {
     public class GeolocationService : IGeolocationService
     {
-        private readonly ISessionService _sessionService;
         private readonly ISecureStorageService _secureStorageService;
-        private readonly ITokenService _tokenService;
         private readonly IApplicationLoggingRequests _applicationLogger;
         private readonly IGeolocationChangedHandler _userGeolocationChangedHandler;
         
         private bool _isRunning;
         private CancellationTokenSource _cts;
 
-        public GeolocationService(ISessionService sessionService,
-                                  ISecureStorageService secureStorageService,
+        public GeolocationService(ISecureStorageService secureStorageService,
                                   IApplicationLoggingRequests applicationLogger,
                                   IGeolocationChangedHandler userGeolocationChangedHandler)
         {
-            _sessionService = sessionService;
             _secureStorageService = secureStorageService;
             _applicationLogger = applicationLogger;
             _userGeolocationChangedHandler = userGeolocationChangedHandler;

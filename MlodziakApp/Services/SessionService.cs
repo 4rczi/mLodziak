@@ -22,24 +22,20 @@ namespace MlodziakApp.Services
 {
     public class SessionService : ISessionService
     {
-        private readonly Auth0Client _auth0Client;
         private readonly ISessionHandler _sessionHandler;
         private readonly ISessionDataHandler _sessionDataHandler;
         private readonly ISessionValidator _sessionValidator;
         private readonly IPopUpService _popUpService;
         private readonly IApplicationLoggingRequests _applicationLogger;
 
-        public event Func<Task>? OnSessionInitialized;
 
         public SessionService(
-            Auth0Client auth0Client,
             ISessionHandler sessionHandler,
             ISessionDataHandler sessionDataHandler,
             ISessionValidator sessionValidator,
             IPopUpService popUpService,
             IApplicationLoggingRequests applicationLogger)
         {
-            _auth0Client = auth0Client;
             _sessionHandler = sessionHandler;
             _sessionDataHandler = sessionDataHandler;
             _sessionValidator = sessionValidator;
