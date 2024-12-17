@@ -6,13 +6,15 @@ namespace MlodziakApp.Views;
 public partial class InvitationPage : ContentPage
 {
 	private readonly InvitationPageViewModel _vm;
+    private readonly IPermissionsService _permissionsService;
 
 
-	public InvitationPage(InvitationPageViewModel vm)
-	{
-		InitializeComponent();
-		_vm = vm;
-		BindingContext = _vm;
+    public InvitationPage(InvitationPageViewModel vm, IPermissionsService permissionsService)
+    {
+        InitializeComponent();
+        _vm = vm;
+        BindingContext = _vm;
+        _permissionsService = permissionsService;
     }
 
     protected override void OnAppearing()
@@ -20,11 +22,16 @@ public partial class InvitationPage : ContentPage
         base.OnAppearing();
         Shell.SetTabBarIsVisible(this, false);
 
-        _ = InitializeAsync();     
+        _ = InitializeAsync();
     }
 
 	private async Task InitializeAsync()
 	{
-        await _vm.ShowInvitationPageAsync();
+        if (!await _permissionsService.CheckRequiredPermissions())
+        {
+            await _permissionsService.HandleDeniedPermissionsAsync();
+        }
+
+        await _vm.ShowInvitationPageAsync();   
     }
 }

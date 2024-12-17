@@ -4,6 +4,7 @@ using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
+using AndroidX.Core.Content;
 using Firebase;
 using Plugin.Firebase.CloudMessaging;
 using Plugin.LocalNotification;
@@ -19,24 +20,6 @@ namespace MlodziakApp
 
             HandleFCMIntent(Intent);
             CreateNotificationChannelIfNeeded();
-
-
-            var pushNotifications = await Permissions.RequestAsync<Permissions.PostNotifications>();
-            var userLocation = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
-
-            var areNotificationsEnabled = await LocalNotificationCenter.Current.AreNotificationsEnabled();
-            if (!areNotificationsEnabled)
-            {
-                var builder = new AlertDialog.Builder(this);
-                builder.SetTitle("Enable Notifications");
-                builder.SetMessage("Please enable notifications for this app in settings.");
-                builder.SetPositiveButton("Settings", (sender, args) =>
-                {
-                    OpenNotificationSettings();
-                });
-                builder.SetNegativeButton("Cancel", (sender, args) => { });
-                builder.Show();
-            }
         }
 
         public void OpenNotificationSettings()

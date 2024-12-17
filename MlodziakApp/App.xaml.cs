@@ -14,14 +14,16 @@ namespace MlodziakApp
         private readonly ITokenService _accessTokenService;
         private readonly ISecureStorageService _secureStorageService;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IGeolocationService _geolocationService;
 
 
-        public App(IApplicationLoggingRequests applicationLogger, ITokenService accessTokenService, ISecureStorageService secureStorageService, IServiceProvider serviceProvider)
+        public App(IApplicationLoggingRequests applicationLogger, ITokenService accessTokenService, ISecureStorageService secureStorageService, IServiceProvider serviceProvider, IGeolocationService geolocationService)
         {
             _applicationLogger = applicationLogger;
             _accessTokenService = accessTokenService;
             _secureStorageService = secureStorageService;
             _serviceProvider = serviceProvider;
+            _geolocationService = geolocationService;
 
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
             TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
@@ -29,12 +31,12 @@ namespace MlodziakApp
             InitializeComponent();
             InitializeServices();
             MainPage = new AppShell();
+            
         }
 
         private void InitializeServices()
         {
-            var pushNotificationService = _serviceProvider.GetService<PushNotificationService>();
-          
+            var pushNotificationService = _serviceProvider.GetService<PushNotificationService>();   
         }
 
         // Handle UI thread exceptions

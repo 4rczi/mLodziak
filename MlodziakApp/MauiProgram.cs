@@ -181,6 +181,7 @@ namespace MlodziakApp
             builder.Services.AddTransient<IAuthenticationService, AuthenticationService>();
             builder.Services.AddSingleton<IGeolocationService, GeolocationService>();
             builder.Services.AddTransient<ITitbitService, TitbitService>();
+            builder.Services.AddTransient<IPermissionsService, PermissionsService>();
 
             // Logic         
             builder.Services.AddTransient<IGeolocationDataLoader, GeolocationDataLoader>();

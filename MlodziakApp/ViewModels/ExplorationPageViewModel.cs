@@ -32,6 +32,7 @@ namespace MlodziakApp.ViewModels
         private readonly ICategoryRequests _categoryRequests;
         private readonly IServiceProvider _serviceProvider;
         private readonly IConnectivityService _connectivityService;
+        private readonly IPermissionsService _permissionsService;
 
         private Dictionary<int, List<LocationModel>> AllLocationModels { get; set; } = [];
 
@@ -56,37 +57,43 @@ namespace MlodziakApp.ViewModels
         [ObservableProperty]
         bool isLocationViewVisible = false;
 
-     
+
         public ExplorationPageViewModel(
             ISessionService sessionService,
             ILocationRequests locationRequests,
             ICategoryRequests categoryRequests,
             IServiceProvider serviceProvider,
-            IConnectivityService connectivityService)
+            IConnectivityService connectivityService,
+            IPermissionsService permissionsService)
         {
             _sessionService = sessionService;
             _locationRequests = locationRequests;
             _categoryRequests = categoryRequests;
             _serviceProvider = serviceProvider;
             _connectivityService = connectivityService;
+            _permissionsService = permissionsService;
         }
 
         public async Task LoadDataAsync()
         {
             try
             {
-                var (isSessionValid, accessToken, refreshToken, sessionId, userId) = await _sessionService.ValidateSessionAsync();
-                var hasInternetConnection = await _connectivityService.HasInternetConnectionAsync();
-
+                var (isSessionValid, accessToken, refreshToken, sessionId, userId) = await _sessionService.ValidateSessionAsync();             
                 if (!isSessionValid)
                 {
                     await _sessionService.HandleInvalidSessionAsync(isLoggedIn: true, notifyUser: true);
                     return;
                 }
 
-                if (!hasInternetConnection)
+                if (!await _connectivityService.HasInternetConnectionAsync())
                 {
                     await _connectivityService.HandleNoInternetConnectionAsync();
+                    return;
+                }
+
+                if (!await _permissionsService.CheckRequiredPermissions())
+                {
+                    await _permissionsService.HandleDeniedPermissionsAsync();
                     return;
                 }
                 
@@ -97,7 +104,7 @@ namespace MlodziakApp.ViewModels
                 IsBusy = false;               
             }
 
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Maybe Display some error message?
                 throw;
