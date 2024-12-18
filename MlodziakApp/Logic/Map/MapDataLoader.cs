@@ -16,30 +16,35 @@ namespace MlodziakApp.Logic.Map
         private readonly ISessionService _sessionService;
         private readonly IConnectivityService _connectivityService;
         private readonly IPhysicalLocationRequests _physicalLocationRequests;
+        private readonly IPermissionsService _permissionsService;
 
 
-        public MapDataLoader(ISessionService sessionService, IConnectivityService connectivityService, IPhysicalLocationRequests physicalLocationRequests)
+        public MapDataLoader(ISessionService sessionService, IConnectivityService connectivityService, IPhysicalLocationRequests physicalLocationRequests, IPermissionsService permissionsService)
         {
             _sessionService = sessionService;
             _connectivityService = connectivityService;
             _physicalLocationRequests = physicalLocationRequests;
+            _permissionsService = permissionsService;
         }
 
         public async Task<List<PhysicalLocationModel>> LoadPhysicalLocationModelsAsync(int locationId, int categoryId)
-        {
-
+        {         
             var (isSessionValid, accessToken, refreshToken, sessionId, userId) = await _sessionService.ValidateSessionAsync();
-            var hasInternetConnection = await _connectivityService.HasInternetConnectionAsync();
-
             if (!isSessionValid)
             {
                 await _sessionService.HandleInvalidSessionAsync(isLoggedIn: true, notifyUser: true);
                 return [];
             }
 
-            if (!hasInternetConnection)
+            if (!await _connectivityService.HasInternetConnectionAsync())
             {
                 await _connectivityService.HandleNoInternetConnectionAsync();
+                return [];
+            }
+
+            if (!await _permissionsService.CheckRequiredPermissionsAsync())
+            {
+                await _permissionsService.HandleDeniedPermissionsAsync();
                 return [];
             }
 

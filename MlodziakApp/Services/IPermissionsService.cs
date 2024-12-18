@@ -3,8 +3,8 @@ namespace MlodziakApp.Services
 {
     public interface IPermissionsService
     {
-        Task<bool> CheckRequiredPermissions();
-        Task<PermissionStatus> CheckRequiredPermissions<TPermission>() where TPermission : Permissions.BasePermission, new();
+        Task<bool> CheckRequiredPermissionsAsync();
+        Task<PermissionStatus> CheckRequiredPermissionsAsync<TPermission>() where TPermission : Permissions.BasePermission, new();
         Task HandleDeniedPermissionsAsync();
     }
 }

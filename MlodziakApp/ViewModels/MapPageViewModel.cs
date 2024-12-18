@@ -31,7 +31,6 @@ namespace MlodziakApp.ViewModels
     public partial class MapPageViewModel : ObservableObject
     {
         private readonly IMapService _mapService;
-        private readonly IConnectivityService _connectivityService;
 
         
         [ObservableProperty]
@@ -45,12 +44,9 @@ namespace MlodziakApp.ViewModels
 
         private MapSpan originalMapLocation;
 
-        public MapPageViewModel(
-                IMapService mapService,
-                IConnectivityService connectivityService)
+        public MapPageViewModel(IMapService mapService)
         {
             _mapService = mapService;
-            _connectivityService = connectivityService;
 
             WeakReferenceMessenger.Default.Register<LocationInfoMessage>(this, OnLocationInfoMessageReceived);
             WeakReferenceMessenger.Default.Register<UserGeolocationMessage>(this, OnUserGeolocationChangedMessageReceived);

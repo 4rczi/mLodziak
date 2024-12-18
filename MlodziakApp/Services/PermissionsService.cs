@@ -20,22 +20,22 @@ namespace MlodziakApp.Services
             _popUpService = popUpService;
         }
 
-        public async Task<bool> CheckRequiredPermissions()
+        public async Task<bool> CheckRequiredPermissionsAsync()
         {          
             // If upon LocationAlways request user chooses "Allow only while using app" returned status is restricted
-            var locationAlwaysStatus = await CheckRequiredPermissions<Permissions.LocationAlways>();
+            var locationAlwaysStatus = await CheckRequiredPermissionsAsync<Permissions.LocationAlways>();
             if (locationAlwaysStatus == PermissionStatus.Denied)
             {
                 return false;
             }
 
-            var networkStatus = await CheckRequiredPermissions<Permissions.NetworkState>();
+            var networkStatus = await CheckRequiredPermissionsAsync<Permissions.NetworkState>();
             if (networkStatus == PermissionStatus.Denied)
             {
                 return false;
             }
 
-            var pushNotificationStatus = await CheckRequiredPermissions<Permissions.PostNotifications>();
+            var pushNotificationStatus = await CheckRequiredPermissionsAsync<Permissions.PostNotifications>();
             if (pushNotificationStatus == PermissionStatus.Denied)
             {
                 return false;
@@ -44,7 +44,7 @@ namespace MlodziakApp.Services
             return true;
         }
 
-        public async Task<PermissionStatus> CheckRequiredPermissions<TPermission>() where TPermission : Permissions.BasePermission, new()
+        public async Task<PermissionStatus> CheckRequiredPermissionsAsync<TPermission>() where TPermission : Permissions.BasePermission, new()
         {
             
             var currentPermissionStatus = await Permissions.CheckStatusAsync<TPermission>();

@@ -27,7 +27,7 @@ public partial class InvitationPage : ContentPage
 
 	private async Task InitializeAsync()
 	{
-        if (!await _permissionsService.CheckRequiredPermissions())
+        if (!await _permissionsService.CheckRequiredPermissionsAsync())
         {
             await _permissionsService.HandleDeniedPermissionsAsync();
         }

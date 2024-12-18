@@ -91,7 +91,7 @@ namespace MlodziakApp.ViewModels
                     return;
                 }
 
-                if (!await _permissionsService.CheckRequiredPermissions())
+                if (!await _permissionsService.CheckRequiredPermissionsAsync())
                 {
                     await _permissionsService.HandleDeniedPermissionsAsync();
                     return;

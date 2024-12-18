@@ -14,13 +14,15 @@ namespace MlodziakApp.Logic.Geolocation
         private readonly ISessionService _sessionService;
         private readonly IUserHistoryRequests _userHistoryRequests;
         private readonly IConnectivityService _connectivityService;
+        private readonly IPermissionsService _permissionsService;
 
 
-        public GeolocationVisitHandler(ISessionService sessionService, IUserHistoryRequests userHistoryRequests, IConnectivityService connectivityService)
+        public GeolocationVisitHandler(ISessionService sessionService, IUserHistoryRequests userHistoryRequests, IConnectivityService connectivityService, IPermissionsService permissionsService)
         {
             _sessionService = sessionService;
             _userHistoryRequests = userHistoryRequests;
             _connectivityService = connectivityService;
+            _permissionsService = permissionsService;
         }
 
         public int? CanVisitLocation(Location userGeolocation, List<PhysicalLocationModel> visitablePhysicalLocationModels)
@@ -44,6 +46,11 @@ namespace MlodziakApp.Logic.Geolocation
         {
             var (isSessionValid, accessToken, refreshToken, sessionId, userId) = await _sessionService.ValidateSessionAsync();
             var hasInternetAccess = await _connectivityService.HasInternetConnectionAsync();
+
+            if (!await _permissionsService.CheckRequiredPermissionsAsync())
+            {
+                await _permissionsService.HandleDeniedPermissionsAsync();
+            }
 
             if (isSessionValid && hasInternetAccess)
             {

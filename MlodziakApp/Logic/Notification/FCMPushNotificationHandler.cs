@@ -18,17 +18,20 @@ namespace MlodziakApp.Logic.Notification
         private readonly ISecureStorageService _secureStorageService;
         private readonly NotificationRequests _notificationRequests;
         private readonly IConnectivityService _connectivityService;
+        private readonly IPermissionsService _permissionsService;
 
 
         public FCMPushNotificationHandler(IApplicationLoggingRequests applicationLogger,
                                       ISecureStorageService secureStorageService,
                                       NotificationRequests notificationRequests,
-                                      IConnectivityService connectivityService)
+                                      IConnectivityService connectivityService,
+                                      IPermissionsService permissionsService)
         {
             _applicationLogger = applicationLogger;
             _secureStorageService = secureStorageService;
             _notificationRequests = notificationRequests;
             _connectivityService = connectivityService;
+            _permissionsService = permissionsService;
         }
 
         private async Task<bool> CanReceiveFCMMessagesAsync()
@@ -83,9 +86,9 @@ namespace MlodziakApp.Logic.Notification
         {
             var isFCMAvailableResult = await IsFCMAvailableAsync();
             var hasInternetConnectionResult = await _connectivityService.HasInternetConnectionAsync();
-            // has appropriate permissions
+            var hasRequiredPermissions = await _permissionsService.CheckRequiredPermissionsAsync();
 
-            return isFCMAvailableResult && hasInternetConnectionResult;
+            return isFCMAvailableResult && hasInternetConnectionResult && hasRequiredPermissions;
         }
     }
 }
