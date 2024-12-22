@@ -42,11 +42,13 @@ namespace MlodziakApp.Logic.Map
                 return [];
             }
 
-            if (!await _permissionsService.CheckRequiredPermissionsAsync())
+            await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                await _permissionsService.HandleDeniedPermissionsAsync();
-                return [];
-            }
+                if (!await _permissionsService.CheckRequiredPermissionsAsync())
+                {
+                    await _permissionsService.HandleDeniedPermissionsAsync();
+                }
+            });
 
             var physicalLocationModels = await _physicalLocationRequests.GetPhysicalLocationModelsAsync(accessToken!, userId!, categoryId, locationId, sessionId!);
             return physicalLocationModels;

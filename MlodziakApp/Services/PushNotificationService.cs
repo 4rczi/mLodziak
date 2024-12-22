@@ -60,8 +60,19 @@ namespace MlodziakApp.Services
             {
 
                 throw;
+            }        
+        }
+
+        public void HandleNotificationTapped(string data)
+        {
+            if (!string.IsNullOrEmpty(data))
+            {
+                // Parse the data and take appropriate action
+                Console.WriteLine($"Notification Tapped with data: {data}");
+
+                // Example: Navigate to a specific page
+                Shell.Current.GoToAsync($"yourpage?data={data}");
             }
-            
         }
     }
 }

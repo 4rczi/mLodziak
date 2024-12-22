@@ -26,9 +26,17 @@ namespace API
                 Token = notificationRequest.DeviceToken,
                 Notification = new Notification()
                 {
-                    Title = notificationRequest.Title,                 
-                }
+                    Title = notificationRequest.Title, 
+                },
+                Data = new Dictionary<string, string>()
+                {
+                    {"notificationId", notificationRequest.NotificationId },
+                    {"physicalLocationid", notificationRequest.PhysicalLocationId },
+                    {"creationDate", notificationRequest.CreationDate.ToString() },                 
+                },                
             };
+
+            var data = message.Data;
 
             string response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
             return response;

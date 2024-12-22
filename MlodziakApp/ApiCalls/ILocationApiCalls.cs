@@ -13,14 +13,20 @@ namespace MlodziakApp.ApiCalls
 
         [Get("/api/locations")]
         Task<List<LocationModel>> GetLocationModelsAsync(
-        [Header("Authorization")] string accessToken,
-        [Query] int categoryId,
-        [Query] string userId);
+            [Header("Authorization")] string accessToken,
+            [Query] int categoryId,
+            [Query] string userId);
 
         [Get("/api/location/all")]
         Task<Dictionary<int, List<LocationModel>>> GetAllLocationModelsAsync(
-        [Header("Authorization")] string accessToken,
-        [Query] string userId);
+            [Header("Authorization")] string accessToken,
+            [Query] string userId);
+
+        [Get("/api/location/single")]
+        Task<LocationModel> GetSingleLocationModelAsync(
+            [Header("Authorization")] string accessToken,
+            [Query] int physicalLocationId,
+            [Query] string userId);
 
 
     }

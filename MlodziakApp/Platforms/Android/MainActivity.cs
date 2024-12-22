@@ -5,9 +5,18 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
 using AndroidX.Core.Content;
+using CommunityToolkit.Mvvm.Messaging;
+using DataAccess.Entities;
 using Firebase;
+using Firebase.Messaging;
+using Microsoft.IdentityModel.Tokens;
+using MlodziakApp.Messages;
+using MlodziakApp.Messages.MessageItems;
 using Plugin.Firebase.CloudMessaging;
+using Plugin.Firebase.CloudMessaging.EventArgs;
+using Plugin.Firebase.CloudMessaging.Platforms.Android.Extensions;
 using Plugin.LocalNotification;
+using Plugin.LocalNotification.EventArgs;
 
 namespace MlodziakApp
 {
@@ -20,13 +29,32 @@ namespace MlodziakApp
 
             HandleFCMIntent(Intent);
             CreateNotificationChannelIfNeeded();
+            CrossFirebaseCloudMessaging.Current.NotificationTapped += FCM_NotificationTapped;
+            LocalNotificationCenter.Current.NotificationActionTapped += OnLocalPushNotificationTapped;
         }
 
-        public void OpenNotificationSettings()
+        private void OnLocalPushNotificationTapped(NotificationActionEventArgs e)
         {
-            Intent intent = new Intent(Android.Provider.Settings.ActionAppNotificationSettings);
-            intent.PutExtra(Android.Provider.Settings.ExtraAppPackage, PackageName);
-            StartActivity(intent);
+            var notificationId = e.Request.NotificationId;
+            var customData = e.Request.ReturningData.Split(';');
+
+            if (notificationId != 0 && !customData.IsNullOrEmpty())
+            {
+                WeakReferenceMessenger.Default.Send(new LocalPushNotificationTappedMessage(new LocalPushNotificationTappedMessageItem(notificationId, customData[0], customData[1])));
+            }
+
+        }
+
+        private void FCM_NotificationTapped(object? sender, FCMNotificationTappedEventArgs e)
+        {
+            var notificationId = e.Notification.Data["notificationId"];
+            var physicalLocationid = e.Notification.Data["physicalLocationid"];
+            var creationDate = e.Notification.Data["creationDate"];
+
+            if (!notificationId.IsNullOrEmpty() && !physicalLocationid.IsNullOrEmpty() && !creationDate.IsNullOrEmpty())
+            {
+                WeakReferenceMessenger.Default.Send(new FCMPushNotificationTappedMessage(new FCMPushNotificationTappedMessageItem(notificationId, physicalLocationid, creationDate)));
+            }
         }
 
         protected override void OnNewIntent(Intent intent)
@@ -55,7 +83,6 @@ namespace MlodziakApp
             var channel = new NotificationChannel(channelId, "General", NotificationImportance.Default);
             notificationManager.CreateNotificationChannel(channel);
             FirebaseCloudMessagingImplementation.ChannelId = channelId;
-            //FirebaseCloudMessagingImplementation.SmallIconRef = Resource.Drawable.ic_push_small;
         }
     }
 

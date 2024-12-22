@@ -47,6 +47,20 @@ namespace API.Controllers
 
             return Ok(locationModels);
         }
+
+        [HttpGet("single")]
+        [Authorize(Policy = "AccessTokenPolicy")]
+        public async Task<ActionResult<Dictionary<int, List<LocationModel>>>> GetSingleLocation([FromQuery] int physicalLocationId, [FromQuery] string userId)
+        {
+            var locationModels = await _locationService.GetLocationModelAsync(physicalLocationId, userId);
+
+            if (locationModels == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return Ok(locationModels);
+        }
     }
 }
 

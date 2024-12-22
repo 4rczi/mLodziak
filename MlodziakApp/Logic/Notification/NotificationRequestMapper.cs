@@ -13,10 +13,16 @@ namespace MlodziakApp.Logic.Notification
     {
         public static NotificationRequest ToLocalNotification(this NotificationRequestModel notificationRequest)
         {
+
+
             return new NotificationRequest
             {
                 Title = notificationRequest.Title,
                 CategoryType = NotificationCategoryType.Event,
+                NotificationId = int.Parse(notificationRequest.NotificationId),
+                ReturningData = $"physicalLocationId={notificationRequest.PhysicalLocationId};creationDate={notificationRequest.CreationDate}"
+
+
             };
         }
     }

@@ -1,4 +1,5 @@
 ﻿using DataAccess.Entities;
+using SharedModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,13 +16,16 @@ namespace MlodziakApp.Messages.MessageItems
         public double Longitude { get; set; }
         public float ZoomLevel { get; set; }
 
-        public LocationInfoMessageItem(int locationId, int categoryId, double latitude, double longitude, float zoomLevel)
+        public PhysicalLocationModel PhysicalLocation { get; set; }
+
+        public LocationInfoMessageItem(int locationId, int categoryId, double latitude, double longitude, float zoomLevel, PhysicalLocationModel physicalLocationModel)
         {
             LocationId = locationId;
             CategoryId = categoryId;
             Latitude = latitude;
             Longitude = longitude; 
             ZoomLevel = zoomLevel;
+            PhysicalLocation = physicalLocationModel;
         }
     }
 }

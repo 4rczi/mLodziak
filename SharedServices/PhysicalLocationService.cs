@@ -89,6 +89,37 @@ namespace SharedServices
             return physicalLocationModel.ToList();
         }
 
+        public async Task<PhysicalLocationModel> GetPhysicalLocationAsync(int physicalLocationId, string userId)
+        {
+            var userHistory = await _userHistoryRepository.GetUserHistoryAsync(userId);
+            var physicalLocation = await _physicalLocationRepository.GetPhysicalLocationAsync(physicalLocationId);
+
+            var visitedPhysicalLocationId = (from physLoc in userHistory
+                                            where physLoc.UserId == userId && physLoc.PhysicalLocationId == physicalLocationId
+                                            select physLoc.PhysicalLocationId).SingleOrDefault();
+
+            var physicalLocationModel = new PhysicalLocationModel
+                                        {
+                                            Id = physicalLocation.Id,
+                                            Name = physicalLocation.Name,
+                                            Description = physicalLocation.Description,
+                                            ImagePath = physicalLocation.ImagePath,
+                                            CategoryId = physicalLocation.CategoryId,
+                                            LocationId = physicalLocation.LocationId,
+                                            DateStart = physicalLocation.StartDate,
+                                            DateEnd = physicalLocation.EndDate,
+                                            AlertStartEventMinutes = physicalLocation.AlertStartEventMinutes,
+                                            AlertEndEventMinutes = physicalLocation.AlertEndEventMinutes,
+                                            Latitude = physicalLocation.Latitude,
+                                            Longitude = physicalLocation.Longitude,
+                                            Radius = physicalLocation.Radius,
+                                            IsVisited = visitedPhysicalLocationId == physicalLocation.Id,
+                                            IsOmmitted = CalculateOmittness(physicalLocation.StartDate, physicalLocation.EndDate)
+                                        };
+
+            return physicalLocationModel;
+        }
+
         public bool CalculateOmittness(DateTime? start, DateTime? end)
         {
             var nowUTC = DateTime.UtcNow;

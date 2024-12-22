@@ -43,11 +43,11 @@ namespace MlodziakApp.Services
             if (_physicalLocationModels.IsNullOrEmpty())
             {
                 await _pupUpService.ShowPopUpAsync(Constants.AlertMessages.FailedToLoadDataMessage, null);
-            }
+            }            
 
             return map;
         }
-      
+
         public PhysicalLocationModel? HandleMapClicked(Location touchPosition)
         {
             var locationClicked = _mapHandler.HandleMapClicked(_physicalLocationModels, touchPosition);

@@ -70,5 +70,26 @@ namespace MlodziakApp.ApiRequests
                 return [];
             }
         }
+
+        public async Task<LocationModel> GetSingleLocationModelAsync(string accessToken, int physicalLocationId, string userId, string sessionId)
+        {
+            try
+            {
+                var response = await _locationApiCalls.GetSingleLocationModelAsync($"Bearer {accessToken}", physicalLocationId, userId);
+                return response;
+            }
+
+            catch (ApiException apiEx)
+            {
+                await _applicationLoggingRequests.LogAsync("Warning", "Unsuccessful code returned", "", "", this.GetType().Name, nameof(GetSingleLocationModelAsync), userId, sessionId, apiEx.StatusCode.ToString(), DateTime.UtcNow, DateTime.UtcNow);
+                return null;
+            }
+
+            catch (Exception ex)
+            {
+                await _applicationLoggingRequests.LogAsync("Error", "Exception caught", "", ex.Message, this.GetType().Name, nameof(GetSingleLocationModelAsync), userId, sessionId, "", DateTime.UtcNow, DateTime.UtcNow);
+                return null;
+            }
+        }
     }
 }

@@ -47,10 +47,13 @@ namespace MlodziakApp.Logic.Geolocation
             var (isSessionValid, accessToken, refreshToken, sessionId, userId) = await _sessionService.ValidateSessionAsync();
             var hasInternetAccess = await _connectivityService.HasInternetConnectionAsync();
 
-            if (!await _permissionsService.CheckRequiredPermissionsAsync())
+            await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                await _permissionsService.HandleDeniedPermissionsAsync();
-            }
+                if (!await _permissionsService.CheckRequiredPermissionsAsync())
+                {
+                    await _permissionsService.HandleDeniedPermissionsAsync();
+                }
+            });
 
             if (isSessionValid && hasInternetAccess)
             {

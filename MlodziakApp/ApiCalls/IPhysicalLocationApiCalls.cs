@@ -21,5 +21,11 @@ namespace MlodziakApp.ApiCalls
         Task<List<PhysicalLocationModel>> GetVisitablePhysicalLocationsAsync(
             [Query] string userId,
             [Header("Authorization")] string accessToken);
+
+        [Get("/api/physicallocation/single")]
+        Task<PhysicalLocationModel> GetSinglePhysicalLocationAsync(
+            [Query] int physicalLocationId,
+            [Query] string userId,
+            [Header("Authorization")] string accessToken);
     }
 }

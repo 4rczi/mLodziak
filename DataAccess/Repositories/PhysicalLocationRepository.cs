@@ -19,7 +19,9 @@ namespace DataAccess.Repositories
 
         public async Task<PhysicalLocation?> GetPhysicalLocationAsync(int physicalLocationId)
         {
-            return await _context.PhysicalLocations.FirstOrDefaultAsync(pl => pl.Id == physicalLocationId);
+            return await _context.PhysicalLocations
+                         .Include(pl => pl.Location)
+                         .FirstOrDefaultAsync(pl => pl.Id == physicalLocationId);
         }
 
         public async Task<List<PhysicalLocation>?> GetPhysicalLocationsAsync()

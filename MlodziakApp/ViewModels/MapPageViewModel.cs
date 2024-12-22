@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -52,6 +53,8 @@ namespace MlodziakApp.ViewModels
             WeakReferenceMessenger.Default.Register<UserGeolocationMessage>(this, OnUserGeolocationChangedMessageReceived);
         }
 
+
+
         private async void OnLocationInfoMessageReceived(object recipient, LocationInfoMessage message)
         {
             Map = await _mapService.InitalizeMapAsync(this, message.Value);
@@ -65,6 +68,18 @@ namespace MlodziakApp.ViewModels
                     Map.VisibleRegion.LatitudeDegrees,
                     Map.VisibleRegion.LongitudeDegrees);
             }
+
+            if (message.Value.PhysicalLocation != null)
+            {
+                DisplayInitialPhysicalLocation(message.Value.PhysicalLocation);
+            }
+        }
+
+        private void DisplayInitialPhysicalLocation(PhysicalLocationModel physicalLocationModel)
+        {
+            var physicalLocation = new Location(physicalLocationModel.Latitude, physicalLocationModel.Longitude);
+            var eventArgs = new MapClickedEventArgs(physicalLocation);
+            OnMapClicked(this, eventArgs);
         }
 
         private void OnUserGeolocationChangedMessageReceived(object recipient, UserGeolocationMessage message)

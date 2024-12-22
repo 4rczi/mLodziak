@@ -8,5 +8,7 @@ namespace SharedServices
         Task<List<PhysicalLocationModel>> GetAllPhysicalLocationsAsync(string userId);
         bool CalculateOmittness(DateTime? start, DateTime? end);
         Task<List<PhysicalLocationModel>> GetVisitablePhysicalLocationsAsync(string userId);
+        Task<PhysicalLocationModel> GetPhysicalLocationAsync(int physicalLocationId, string userId);
+
     }
 }

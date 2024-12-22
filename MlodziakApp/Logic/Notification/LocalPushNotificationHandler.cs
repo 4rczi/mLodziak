@@ -1,6 +1,9 @@
-﻿using MlodziakApp.ApiRequests;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using MlodziakApp.ApiRequests;
+using MlodziakApp.Messages;
 using MlodziakApp.Services;
 using Plugin.LocalNotification;
+using Plugin.LocalNotification.EventArgs;
 using SharedModels;
 using System;
 using System.Collections.Generic;
@@ -21,7 +24,11 @@ namespace MlodziakApp.Logic.Notification
         {
             _applicationLogger = applicationLogger;
             _secureStorageService = secureStorageService;
+        }
 
+        private void OnLocalPushNotificationTapped(NotificationActionEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<bool> SendNotificationAsync(NotificationRequestModel notificationRequest)

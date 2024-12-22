@@ -46,5 +46,19 @@ namespace API.Controllers
         
             return Ok(physicalLocationList);
         }
+
+        [HttpGet("single")]
+        [Authorize(Policy = "AccessTokenPolicy")]
+        public async Task<ActionResult<PhysicalLocationModel>> GetSinglePhysicalLocation([FromQuery] int physicalLocationId, [FromQuery] string userId)
+        {
+            var physicalLocation = await _physicalLocationService.GetPhysicalLocationAsync(physicalLocationId, userId);
+
+            if (physicalLocation == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(physicalLocation);
+        }
     }
 }

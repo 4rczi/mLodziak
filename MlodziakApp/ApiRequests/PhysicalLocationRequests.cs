@@ -97,11 +97,58 @@ namespace MlodziakApp.ApiRequests
 
             catch (Exception ex)
             {
-                await _applicationLoggingRequests.LogAsync("Error", "Exception caught", "", ex.Message,
-                    this.GetType().Name, nameof(GetVisitablePhysicalLocationModelsAsync), userId, sessionId,
-                    "", DateTime.UtcNow, DateTime.UtcNow);
+                await _applicationLoggingRequests.LogAsync("Error", "Exception caught", "",
+                    ex.Message,
+                    this.GetType().Name,
+                    nameof(GetVisitablePhysicalLocationModelsAsync),
+                    userId,
+                    sessionId,
+                    "",
+                    DateTime.UtcNow,
+                    DateTime.UtcNow);
 
                 return [];
+            }
+        }
+
+        public async Task<PhysicalLocationModel?> GetSinglePhysicalLocationAsync(string accessToken, int physicalLocationId, string userId, string sessionId)
+        {
+            try
+            {
+                var response = await _physicalLocationApiCalls.GetSinglePhysicalLocationAsync(physicalLocationId, userId, $"Bearer {accessToken}");
+                return response;
+            }
+            catch (ApiException apiEx)
+            {
+                await _applicationLoggingRequests.LogAsync("Warning",
+                    "Unsuccessful code returned",
+                    "",
+                    "",
+                    this.GetType().Name,
+                    nameof(GetSinglePhysicalLocationAsync),
+                    userId,
+                    sessionId,
+                    apiEx.StatusCode.ToString(),
+                    DateTime.UtcNow,
+                    DateTime.UtcNow);
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                await _applicationLoggingRequests.LogAsync("Error",
+                    "Exception caught",
+                    "",
+                    ex.Message,
+                    this.GetType().Name,
+                    nameof(GetSinglePhysicalLocationAsync),
+                    userId,
+                    sessionId,
+                    "",
+                    DateTime.UtcNow,
+                    DateTime.UtcNow);
+
+                return null;
             }
         }
     }

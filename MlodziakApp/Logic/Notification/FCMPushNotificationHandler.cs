@@ -1,6 +1,12 @@
 ﻿using CommunityToolkit.Maui.Converters;
+using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Graphics.Text;
 using MlodziakApp.ApiRequests;
+using MlodziakApp.Messages;
+using MlodziakApp.Messages.MessageItems;
 using MlodziakApp.Services;
+using MlodziakApp.Views;
 using Plugin.Firebase.CloudMessaging;
 using SharedModels;
 using System;
@@ -19,19 +25,39 @@ namespace MlodziakApp.Logic.Notification
         private readonly NotificationRequests _notificationRequests;
         private readonly IConnectivityService _connectivityService;
         private readonly IPermissionsService _permissionsService;
+        private readonly ISessionService _sessionService;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly ILocationRequests _locationRequests;
+        private readonly IPhysicalLocationRequests _physicalLocationRequests;
 
 
         public FCMPushNotificationHandler(IApplicationLoggingRequests applicationLogger,
                                       ISecureStorageService secureStorageService,
                                       NotificationRequests notificationRequests,
                                       IConnectivityService connectivityService,
-                                      IPermissionsService permissionsService)
+                                      IPermissionsService permissionsService,
+                                      ISessionService sessionService,
+                                      IServiceProvider serviceProvider,
+                                      ILocationRequests locationRequests,
+                                      IPhysicalLocationRequests physicalLocationRequests)
         {
             _applicationLogger = applicationLogger;
             _secureStorageService = secureStorageService;
             _notificationRequests = notificationRequests;
             _connectivityService = connectivityService;
             _permissionsService = permissionsService;
+            _sessionService = sessionService;
+            _serviceProvider = serviceProvider;
+            _locationRequests = locationRequests;
+
+            WeakReferenceMessenger.Default.Register<FCMPushNotificationTappedMessage>(this, OnPushNotificationTapped);
+            _physicalLocationRequests = physicalLocationRequests;
+        }
+
+        private async void OnPushNotificationTapped(object recipient, FCMPushNotificationTappedMessage message)
+        {
+
+            await HandleTappedPushNotificationAsync(message.Value);
         }
 
         private async Task<bool> CanReceiveFCMMessagesAsync()
@@ -61,10 +87,15 @@ namespace MlodziakApp.Logic.Notification
 
         public async Task<bool> SendNotificationAsync(NotificationRequestModel notificationMessageModel)
         {
-            var accessToken = await _secureStorageService.GetAccessTokenAsync();
-            if (accessToken == null)
+            var (isSessionValid, accessToken, refreshToken, sessionId, userId) = await _sessionService.ValidateSessionAsync();
+            if(!isSessionValid)
             {
-                return false;
+                await _sessionService.HandleInvalidSessionAsync(isLoggedIn:true, notifyUser:true);
+            }
+
+            if (!await _connectivityService.HasInternetConnectionAsync())
+            {
+                await _connectivityService.HandleNoInternetConnectionAsync();
             }
 
             return await _notificationRequests.SendFCMNotificationMessageRequestAsync(accessToken, notificationMessageModel);
@@ -72,11 +103,15 @@ namespace MlodziakApp.Logic.Notification
 
         public async Task<NotificationRequestModel> CreateNotificationRequestAsync(PhysicalLocationModel visitedLocation)
         {
+            // Both fcm and local must send data that will identtify each intent call in main activity
             const string basicMessage = "Odwiedzono nową lokalizację - ";
             var notificationRequest = new NotificationRequestModel()
-            {
+            {                       
+                CreationDate = DateTime.UtcNow,
                 Title = basicMessage + visitedLocation.Name,
-                DeviceToken = await GetFCMDeviceTokenAsync()
+                DeviceToken = await GetFCMDeviceTokenAsync(),
+                NotificationId = Guid.NewGuid().ToString(),
+                PhysicalLocationId = visitedLocation.Id.ToString(),
             };
 
             return notificationRequest;
@@ -86,9 +121,42 @@ namespace MlodziakApp.Logic.Notification
         {
             var isFCMAvailableResult = await IsFCMAvailableAsync();
             var hasInternetConnectionResult = await _connectivityService.HasInternetConnectionAsync();
-            var hasRequiredPermissions = await _permissionsService.CheckRequiredPermissionsAsync();
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                if (!await _permissionsService.CheckRequiredPermissionsAsync())
+                {
+                    await _permissionsService.HandleDeniedPermissionsAsync();
+                }
+            });
 
-            return isFCMAvailableResult && hasInternetConnectionResult && hasRequiredPermissions;
+            return isFCMAvailableResult && hasInternetConnectionResult;
+        }
+
+        private async Task HandleTappedPushNotificationAsync(FCMPushNotificationTappedMessageItem physicalLocationInfo)
+        {
+            var (isSessionValid, accessToken, refreshToken, sessionId, userId) = await _sessionService.ValidateSessionAsync();
+            if (!isSessionValid)
+            {
+                await _sessionService.HandleInvalidSessionAsync(isLoggedIn: true, notifyUser: true);
+            }
+
+            var locationModel = await _locationRequests.GetSingleLocationModelAsync(accessToken!, int.Parse(physicalLocationInfo.PhysicalLocationId), userId!, sessionId!);
+            var physicalLocationModel = await _physicalLocationRequests.GetSinglePhysicalLocationAsync(accessToken, int.Parse(physicalLocationInfo.PhysicalLocationId), userId, sessionId);
+
+
+            var mapPage = _serviceProvider.GetRequiredService<MapPage>();
+            if (mapPage != null)
+            {
+                await App.Current?.MainPage?.Navigation.PushModalAsync(mapPage);
+                WeakReferenceMessenger.Default.Send(new LocationInfoMessage(new LocationInfoMessageItem(locationModel.Id,
+                                                                                                    locationModel.CategoryId,
+                                                                                                    locationModel.Latitude,
+                                                                                                    locationModel.Longitude,
+                                                                                                    locationModel.ZoomLevel,
+                                                                                                    physicalLocationModel)));
+            }
+
+            return;
         }
     }
 }

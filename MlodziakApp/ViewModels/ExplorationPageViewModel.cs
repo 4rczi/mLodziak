@@ -91,12 +91,14 @@ namespace MlodziakApp.ViewModels
                     return;
                 }
 
-                if (!await _permissionsService.CheckRequiredPermissionsAsync())
+                await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
-                    await _permissionsService.HandleDeniedPermissionsAsync();
-                    return;
-                }
-                
+                    if (!await _permissionsService.CheckRequiredPermissionsAsync())
+                    {
+                        await _permissionsService.HandleDeniedPermissionsAsync();
+                    }
+                });
+
                 ClearData();
 
                 IsBusy = true;
@@ -156,7 +158,7 @@ namespace MlodziakApp.ViewModels
             if (mapPage != null)
             {            
                 await App.Current?.MainPage?.Navigation.PushModalAsync(mapPage);
-                WeakReferenceMessenger.Default.Send(new LocationInfoMessage(new LocationInfoMessageItem(locationId, categoryId, latitude, longitude, zoomLevel)));
+                WeakReferenceMessenger.Default.Send(new LocationInfoMessage(new LocationInfoMessageItem(locationId, categoryId, latitude, longitude, zoomLevel, null)));
             }
         }
 

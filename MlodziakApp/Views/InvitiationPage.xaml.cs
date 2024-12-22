@@ -27,10 +27,13 @@ public partial class InvitationPage : ContentPage
 
 	private async Task InitializeAsync()
 	{
-        if (!await _permissionsService.CheckRequiredPermissionsAsync())
+        await MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            await _permissionsService.HandleDeniedPermissionsAsync();
-        }
+            if (!await _permissionsService.CheckRequiredPermissionsAsync())
+            {
+                await _permissionsService.HandleDeniedPermissionsAsync();
+            }
+        });
 
         await _vm.ShowInvitationPageAsync();   
     }

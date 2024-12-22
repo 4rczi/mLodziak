@@ -107,5 +107,43 @@ namespace SharedServices
 
             return locationDictionary;
         }
+
+        public async Task<LocationModel> GetLocationModelAsync(int physicalLocationId, string userId)
+        {
+            var physicalLocation = await _physicalLocationRepository.GetPhysicalLocationAsync(physicalLocationId);
+            var location = physicalLocation.Location;
+            var userHistory = await _userHistoryRepository.GetUserHistoryAsync(userId);
+
+            var visitedLocations = (from pl in new[] { physicalLocation } // Casting single value to array to be able to perform join operation
+                                    join uh in userHistory.DefaultIfEmpty()
+                                    on pl.Id equals uh?.PhysicalLocationId into joinResult
+                                    where pl.Id == physicalLocationId
+                                    group joinResult by new { pl.LocationId, pl.CategoryId } into aggregated_query
+                                    select new
+                                    {
+                                        aggregated_query.Key.LocationId,
+                                        aggregated_query.Key.CategoryId,
+                                        visitedLocationsCount = aggregated_query.Count(uh => uh != null && uh.Any(u => u.UserId == userId)),
+                                        physLocationsCount = aggregated_query.Count()
+                                    })
+                                    .SingleOrDefault();
+
+            var locationModel = new LocationModel()
+            {
+                Id = location.Id,
+                CategoryId = location.CategoryId,
+                Name = location.Name,
+                Description = location.Description,
+                ImagePath = location.ImagePath,
+                Latitude = location.Latitude,
+                Longitude = location.Longitude,
+                ZoomLevel = location.ZoomLevel,
+                VisitedPhysicalLocationsCount = visitedLocations.visitedLocationsCount,
+                PhysicalLocationsCount = visitedLocations.physLocationsCount
+            };
+
+
+            return locationModel;
+        }
     }
 }
