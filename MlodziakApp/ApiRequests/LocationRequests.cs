@@ -33,7 +33,7 @@ namespace MlodziakApp.ApiRequests
         {
             try
             {
-                var response = await _locationApiCalls.GetLocationModelsAsync($"Bearer {accessToken}", categoryId, userId);
+                var response = await _locationApiCalls.GetLocationModelsAsync($"Bearer {accessToken}", userId, categoryId);
                 return response;
             }
 
@@ -75,7 +75,7 @@ namespace MlodziakApp.ApiRequests
         {
             try
             {
-                var response = await _locationApiCalls.GetSingleLocationModelAsync($"Bearer {accessToken}", physicalLocationId, userId);
+                var response = await _locationApiCalls.GetSingleLocationModelAsync($"Bearer {accessToken}", userId, physicalLocationId);
                 return response;
             }
 

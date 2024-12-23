@@ -20,46 +20,46 @@ namespace API.Controllers
             _locationService = locationService;
         }
 
-        [HttpGet("locations")]
+        [HttpGet("{userId}/{categoryId}")]
         [Authorize(Policy = "AccessTokenPolicy")]
-        public async Task<ActionResult<List<LocationModel>>> GetLocations([FromQuery] int categoryId, [FromQuery] string userId)
+        public async Task<ActionResult<List<LocationModel>>> GetLocations([FromRoute] string userId, [FromRoute] int categoryId)
         {
             var locationModels = await _locationService.GetLocationModelsAsync(userId, categoryId);
 
             if (locationModels.IsNullOrEmpty())
             {
-                return StatusCode(StatusCodes.Status404NotFound);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             return Ok(locationModels);
         }
 
-        [HttpGet("all")]
+        [HttpGet("{userId}/all")]
         [Authorize(Policy = "AccessTokenPolicy")]
-        public async Task<ActionResult<Dictionary<int, List<LocationModel>>>> GetAllLocations([FromQuery] string userId)
+        public async Task<ActionResult<Dictionary<int, List<LocationModel>>>> GetAllLocations([FromRoute] string userId)
         {
             var locationModels = await _locationService.GetAllLocationModelsAsync(userId);
 
             if (locationModels.IsNullOrEmpty())
             {
-                return StatusCode(StatusCodes.Status404NotFound);
+                return NotFound();
             }
 
             return Ok(locationModels);
         }
 
-        [HttpGet("single")]
+        [HttpGet("{userId}/single/{physicalLocationId}")]
         [Authorize(Policy = "AccessTokenPolicy")]
-        public async Task<ActionResult<Dictionary<int, List<LocationModel>>>> GetSingleLocation([FromQuery] int physicalLocationId, [FromQuery] string userId)
+        public async Task<ActionResult<LocationModel>> GetSingleLocation([FromRoute] string userId, [FromRoute] int physicalLocationId)
         {
-            var locationModels = await _locationService.GetLocationModelAsync(physicalLocationId, userId);
+            var locationModel = await _locationService.GetLocationModelAsync(physicalLocationId, userId);
 
-            if (locationModels == null)
+            if (locationModel == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            return Ok(locationModels);
+            return Ok(locationModel);
         }
     }
 }
