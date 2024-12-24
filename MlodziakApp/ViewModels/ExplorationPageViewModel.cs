@@ -154,12 +154,8 @@ namespace MlodziakApp.ViewModels
             var longitude = (double)boundInfo[3];
             var zoomLevel = (float)boundInfo[4];
 
-            var mapPage = _serviceProvider.GetRequiredService<MapPage>();
-            if (mapPage != null)
-            {            
-                await App.Current?.MainPage?.Navigation.PushModalAsync(mapPage);
-                WeakReferenceMessenger.Default.Send(new LocationInfoMessage(new LocationInfoMessageItem(locationId, categoryId, latitude, longitude, zoomLevel, null)));
-            }
+            await Shell.Current.GoToAsync($"//{nameof(ExplorationPage)}/{nameof(MapPage)}");
+            WeakReferenceMessenger.Default.Send(new LocationInfoMessage(new LocationInfoMessageItem(locationId, categoryId, latitude, longitude, zoomLevel, null)));
         }
 
         private void ClearData()

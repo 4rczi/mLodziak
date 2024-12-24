@@ -143,19 +143,14 @@ namespace MlodziakApp.Logic.Notification
             var locationModel = await _locationRequests.GetSingleLocationModelAsync(accessToken!, int.Parse(physicalLocationInfo.PhysicalLocationId), userId!, sessionId!);
             var physicalLocationModel = await _physicalLocationRequests.GetSinglePhysicalLocationAsync(accessToken, int.Parse(physicalLocationInfo.PhysicalLocationId), userId, sessionId);
 
-
-            var mapPage = _serviceProvider.GetRequiredService<MapPage>();
-            if (mapPage != null)
-            {
-                await App.Current?.MainPage?.Navigation.PushModalAsync(mapPage);
-                WeakReferenceMessenger.Default.Send(new LocationInfoMessage(new LocationInfoMessageItem(locationModel.Id,
+            await Shell.Current.GoToAsync($"//{nameof(ExplorationPage)}/{nameof(MapPage)}");
+            WeakReferenceMessenger.Default.Send(new LocationInfoMessage(new LocationInfoMessageItem(locationModel.Id,
                                                                                                     locationModel.CategoryId,
                                                                                                     locationModel.Latitude,
                                                                                                     locationModel.Longitude,
                                                                                                     locationModel.ZoomLevel,
                                                                                                     physicalLocationModel)));
-            }
-
+            
             return;
         }
     }

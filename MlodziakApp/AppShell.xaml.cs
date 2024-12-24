@@ -10,6 +10,7 @@ namespace MlodziakApp
 
             Routing.RegisterRoute(nameof(ExplorationPage), typeof(ExplorationPage));
             Routing.RegisterRoute(nameof(InvitationPage), typeof(InvitationPage));
+            Routing.RegisterRoute(nameof(MapPage), typeof(MapPage));
         }
 
     }
