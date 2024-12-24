@@ -33,7 +33,7 @@ namespace SharedServices
 
             var visitedPhysicalLocations = from pl in physicalLocation
                                            join uh in userHistory.DefaultIfEmpty()
-                                           on pl.Id equals uh?.PhysicalLocationId into joinResult /// Uh?
+                                           on pl.Id equals uh?.PhysicalLocationId into joinResult
                                            group joinResult by new { pl.LocationId, pl.CategoryId } into aggregated_query
                                            select new
                                            {

@@ -36,8 +36,6 @@ namespace API
                 },                
             };
 
-            var data = message.Data;
-
             string response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
             return response;
         }
