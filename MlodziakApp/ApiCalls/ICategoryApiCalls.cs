@@ -12,7 +12,8 @@ namespace MlodziakApp.ApiCalls
     {
         [Get("/api/category/{userId}")]
         Task<List<CategoryModel>> GetCategoriesAsync(
-                                      string userId,
-            [Header("Authorization")] string accessToken);
+            [Header("Authorization")] string accessToken,
+                                      string userId
+            );
     }
 }

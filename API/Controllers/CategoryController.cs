@@ -19,13 +19,13 @@ namespace API.Controllers
 
         [HttpGet("{userId}")]
         [Authorize(Policy = "AccessTokenPolicy")]
-        public async Task<ActionResult<List<CategoryModel>>> GetCategories(string userId)
+        public async Task<ActionResult<List<CategoryModel>>> GetCategories([FromRoute]string userId)
         {
             var categoryModels = await _categoryService.GetCategoryModelsAsync(userId);
 
             if (categoryModels == null)
             {
-                return StatusCode(StatusCodes.Status404NotFound);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             return Ok(categoryModels);

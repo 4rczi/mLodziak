@@ -35,7 +35,7 @@ namespace MlodziakApp.ApiRequests
         {
             try
             {
-                var user = await _userApiCalls.GetUserAsync(userId, $"Bearer {accessToken}");
+                var user = await _userApiCalls.GetUserAsync($"Bearer {accessToken}", userId);
                 return user;
             }
 

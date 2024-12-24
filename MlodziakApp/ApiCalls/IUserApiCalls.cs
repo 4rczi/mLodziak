@@ -10,8 +10,8 @@ namespace MlodziakApp.ApiCalls
 {
     public interface IUserApiCalls
     {
-        [Get("/api/user")]
-        Task<User?> GetUserAsync([Query]string userId, [Header("Authorization")] string accessToken);
+        [Get("/api/user/{userId}")]
+        Task<User?> GetUserAsync([Header("Authorization")] string accessToken, string userId);
 
         [Post("/api/user")]
         Task<object> CreateNewUserAsync([Body] User user, [Header("Authorization")] string accessToken);

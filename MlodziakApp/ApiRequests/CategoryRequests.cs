@@ -29,7 +29,7 @@ namespace MlodziakApp.ApiRequests
         {
             try
             {
-                return await _categoryApiCalls.GetCategoriesAsync(userId, $"Bearer {accessToken}");
+                return await _categoryApiCalls.GetCategoriesAsync($"Bearer {accessToken}", userId);
             }
             catch (ApiException apiEx)
             {

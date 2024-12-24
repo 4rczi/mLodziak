@@ -17,9 +17,9 @@ namespace API.Controllers
             _userService = userService;
         }
 
-        [HttpGet()]
+        [HttpGet("{userId}")]
         [Authorize(Policy = "AccessTokenPolicy")]
-        public async Task<ActionResult<User>> GetUser([FromQuery]string userId)
+        public async Task<ActionResult<User>> GetUser([FromRoute]string userId)
         {
             var user = await _userService.GetUserByIdAsync(userId);
 
