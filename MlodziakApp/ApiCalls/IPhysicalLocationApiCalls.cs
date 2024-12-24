@@ -10,22 +10,22 @@ namespace MlodziakApp.ApiCalls
 {
     public interface IPhysicalLocationApiCalls
     {
-        [Get("/api/physicallocation")]
+        [Get("/api/physicallocation/{userId}/{categoryId}/{locationId}")]
         Task<List<PhysicalLocationModel>> GetPhysicalLocationsAsync(
-            [Query] string userId,
-            [Query] int categoryId,
-            [Query] int locationId,
-            [Header("Authorization")] string accessToken);
+            [Header("Authorization")] string accessToken,
+            string userId,
+            int categoryId,
+            int locationId);
 
-        [Get("/api/physicallocation/visitable")]
+        [Get("/api/physicallocation/{userId}/visitable")]
         Task<List<PhysicalLocationModel>> GetVisitablePhysicalLocationsAsync(
-            [Query] string userId,
-            [Header("Authorization")] string accessToken);
+            [Header("Authorization")] string accessToken,
+            string userId);
 
-        [Get("/api/physicallocation/single")]
+        [Get("/api/physicallocation/{userId}/single/{physicalLocationId}")]
         Task<PhysicalLocationModel> GetSinglePhysicalLocationAsync(
-            [Query] int physicalLocationId,
-            [Query] string userId,
-            [Header("Authorization")] string accessToken);
+            [Header("Authorization")] string accessToken,
+            string userId,
+            int physicalLocationId);
     }
 }

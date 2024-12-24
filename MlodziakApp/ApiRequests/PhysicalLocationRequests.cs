@@ -31,7 +31,7 @@ namespace MlodziakApp.ApiRequests
         {
             try
             {
-                var response = await _physicalLocationApiCalls.GetPhysicalLocationsAsync(userId, categoryId, locationId, $"Bearer {accessToken}");
+                var response = await _physicalLocationApiCalls.GetPhysicalLocationsAsync($"Bearer {accessToken}", userId, categoryId, locationId);
                 return response;
             }
 
@@ -74,7 +74,7 @@ namespace MlodziakApp.ApiRequests
         {
             try
             {
-                var response = await _physicalLocationApiCalls.GetVisitablePhysicalLocationsAsync(userId, $"Bearer {accessToken}");
+                var response = await _physicalLocationApiCalls.GetVisitablePhysicalLocationsAsync($"Bearer {accessToken}", userId);
                 return response;
             }
 
@@ -115,7 +115,7 @@ namespace MlodziakApp.ApiRequests
         {
             try
             {
-                var response = await _physicalLocationApiCalls.GetSinglePhysicalLocationAsync(physicalLocationId, userId, $"Bearer {accessToken}");
+                var response = await _physicalLocationApiCalls.GetSinglePhysicalLocationAsync($"Bearer {accessToken}", userId, physicalLocationId);
                 return response;
             }
             catch (ApiException apiEx)
