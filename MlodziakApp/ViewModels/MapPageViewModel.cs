@@ -38,7 +38,7 @@ namespace MlodziakApp.ViewModels
         bool isPhysicalLocationViewVisible;
 
         [ObservableProperty]
-        ObservableCollection<PhysicalLocationModel> selectedPhysicalLocationModel = new ObservableCollection<PhysicalLocationModel>();
+        ObservableCollection<PhysicalLocationModel> selectedPhysicalLocationModel = [];
 
         [ObservableProperty]
         public Map map;

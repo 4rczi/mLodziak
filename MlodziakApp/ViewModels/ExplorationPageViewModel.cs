@@ -46,10 +46,10 @@ namespace MlodziakApp.ViewModels
         CategoryModel selectedCategory;
 
         [ObservableProperty]
-        ObservableCollection<LocationModel> displayedLocationModels = new ObservableCollection<LocationModel>();
+        ObservableCollection<LocationModel> displayedLocationModels = [];
 
         [ObservableProperty]
-        ObservableCollection<CategoryModel> categoryModels = new ObservableCollection<CategoryModel>();
+        ObservableCollection<CategoryModel> categoryModels = [];
 
         [ObservableProperty]
         bool isCategoryViewVisible = true;
