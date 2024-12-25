@@ -23,23 +23,17 @@ namespace MlodziakApp.Services
     public class SessionService : ISessionService
     {
         private readonly ISessionHandler _sessionHandler;
-        private readonly ISessionDataHandler _sessionDataHandler;
         private readonly ISessionValidator _sessionValidator;
-        private readonly IPopUpService _popUpService;
         private readonly IApplicationLoggingRequests _applicationLogger;
 
 
         public SessionService(
             ISessionHandler sessionHandler,
-            ISessionDataHandler sessionDataHandler,
             ISessionValidator sessionValidator,
-            IPopUpService popUpService,
             IApplicationLoggingRequests applicationLogger)
         {
             _sessionHandler = sessionHandler;
-            _sessionDataHandler = sessionDataHandler;
             _sessionValidator = sessionValidator;
-            _popUpService = popUpService;
             _applicationLogger = applicationLogger;
         }
 
@@ -58,24 +52,17 @@ namespace MlodziakApp.Services
             return (isSessionValid, accessToken, refreshToken, sessionId, userId );
         }
 
-        public async Task HandleInvalidSessionAsync(bool isLoggedIn, bool notifyUser)
+        public async Task HandleInvalidSessionAsync(bool isLoggedIn)
         {
             if (isLoggedIn)
             {
                 var sessionExpiredMessage = new SessionExpiredMessage(false);             
-                WeakReferenceMessenger.Default.Send(sessionExpiredMessage);
-
-                // Asynchronously wait for listeners' handlers to complete
-                await sessionExpiredMessage.CompletionSource.Task;
+                WeakReferenceMessenger.Default.Send(sessionExpiredMessage);     
+                await sessionExpiredMessage.CompletionSource.Task; // Asynchronously wait for listeners' handlers to complete          
             }
 
-            await _sessionHandler.HandleInvalidSessionAsync();
+            await _sessionHandler.HandleInvalidSessionAsync(isLoggedIn);
 
-            if (notifyUser)
-            {
-                await _popUpService.ShowPopUpAsync(Constants.AlertMessages.InvalidSessionMessage, null);
-            }
-            
             return;
         }
 
@@ -91,39 +78,6 @@ namespace MlodziakApp.Services
 
             // We dont await handlers' results, cause geolocation service run in an infite loop
             WeakReferenceMessenger.Default.Send(new SessionInitializedMessage(false));
-
-            return true;
-        }
-
-        public async Task<(bool isSuccess, string? accessToken, string? refreshToken, string? sessionId, string? userId)> GetSessionDataAsync()
-        {
-            var (isSuccess, accessToken, refreshToken, sessionId, userId) = await _sessionDataHandler.GetSessionDataAsync();
-            if (!isSuccess)
-            {
-                return (false, null, null, null, null);
-            }
-
-            return (true,  accessToken, refreshToken, sessionId, userId);
-        }
-
-        public async Task<bool> SetSessionDataAsync(string sessionId, string userId, string accessToken, string refreshToken)
-        {
-            var successResult = await _sessionDataHandler.SetSessionDataAsync(sessionId, userId, accessToken, refreshToken);
-            if (!successResult)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public async Task<bool> RemoveSessionDataAsync()
-        {
-            var successResult = await _sessionDataHandler.RemoveSessionDataAsync();
-            if (!successResult)
-            {
-                return false;
-            }
 
             return true;
         }

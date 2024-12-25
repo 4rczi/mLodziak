@@ -83,10 +83,6 @@ namespace MlodziakApp.Services
                 return false;
             }
 
-            await _sessionService.Value.HandleInvalidSessionAsync(isLoggedIn: true, notifyUser: true);
-
-            await Shell.Current.GoToAsync($"//{nameof(InvitationPage)}");
-
             return true;   
         }
             

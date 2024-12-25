@@ -45,7 +45,10 @@ namespace MlodziakApp.Services
 
         private async void OnSessionExpiredMessageReceived(object recipient, SessionExpiredMessage message)
         {
-            await StopTrackingUserLocationAsync();
+            if (_isRunning)
+            {
+                await StopTrackingUserLocationAsync();             
+            }
             message.CompletionSource.TrySetResult(true);
         }
 

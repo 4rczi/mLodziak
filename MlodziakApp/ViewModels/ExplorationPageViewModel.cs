@@ -78,10 +78,10 @@ namespace MlodziakApp.ViewModels
         {
             try
             {
-                var (isSessionValid, accessToken, refreshToken, sessionId, userId) = await _sessionService.ValidateSessionAsync();             
+                var (isSessionValid, accessToken, refreshToken, sessionId, userId) = await _sessionService.ValidateSessionAsync();
                 if (!isSessionValid)
                 {
-                    await _sessionService.HandleInvalidSessionAsync(isLoggedIn: true, notifyUser: true);
+                    await _sessionService.HandleInvalidSessionAsync(isLoggedIn: true);
                     return;
                 }
 

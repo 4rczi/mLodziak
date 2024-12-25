@@ -75,7 +75,7 @@ namespace MlodziakApp.ViewModels
                     return;
                 }
                     
-                await _sessionService.HandleInvalidSessionAsync(isLoggedIn: false, notifyUser: false);
+                await _sessionService.HandleInvalidSessionAsync(isLoggedIn: false);
 
                 var isLoginSuccess = await _authenticationService.LoginAsync();
                 if (!isLoginSuccess)

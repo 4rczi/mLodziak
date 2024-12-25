@@ -90,7 +90,7 @@ namespace MlodziakApp.Logic.Notification
             var (isSessionValid, accessToken, refreshToken, sessionId, userId) = await _sessionService.ValidateSessionAsync();
             if(!isSessionValid)
             {
-                await _sessionService.HandleInvalidSessionAsync(isLoggedIn:true, notifyUser:true);
+                await _sessionService.HandleInvalidSessionAsync(isLoggedIn:true);
             }
 
             if (!await _connectivityService.HasInternetConnectionAsync())
@@ -137,7 +137,7 @@ namespace MlodziakApp.Logic.Notification
             var (isSessionValid, accessToken, refreshToken, sessionId, userId) = await _sessionService.ValidateSessionAsync();
             if (!isSessionValid)
             {
-                await _sessionService.HandleInvalidSessionAsync(isLoggedIn: true, notifyUser: true);
+                await _sessionService.HandleInvalidSessionAsync(isLoggedIn: true);
             }
 
             var locationModel = await _locationRequests.GetSingleLocationModelAsync(accessToken!, int.Parse(physicalLocationInfo.PhysicalLocationId), userId!, sessionId!);

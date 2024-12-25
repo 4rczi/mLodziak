@@ -15,13 +15,16 @@ namespace MlodziakApp.Logic.Session
     {
         private readonly ISessionDataHandler _sessionDataHandler;
         private readonly IAuthenticationService _authenticationService;
+        private readonly IPopUpService _popUpService;
 
         public SessionHandler(
             ISessionDataHandler sessionDataHandler,
-            IAuthenticationService authenticationService)
+            IAuthenticationService authenticationService,
+            IPopUpService popUpService)
         {
             _sessionDataHandler = sessionDataHandler;
             _authenticationService = authenticationService;
+            _popUpService = popUpService;
         }
 
         public async Task<(bool isSuccess, string? sessionId)> InitializeSessionAsync(string accessToken, string refreshToken, string userId)
@@ -37,9 +40,17 @@ namespace MlodziakApp.Logic.Session
             return (true, sessionId);
         }
 
-        public async Task HandleInvalidSessionAsync()
-        {     
-            //await _authenticationService.LogoutAsync();
+        public async Task HandleInvalidSessionAsync(bool isLoggedIn)
+        {          
+            if (isLoggedIn)
+            {
+                await _popUpService.ShowPopUpAsync(Constants.AlertMessages.InvalidSessionMessage, null);
+                await _authenticationService.LogoutAsync();
+                await _sessionDataHandler.RemoveSessionDataAsync();
+                await Shell.Current.GoToAsync($"//{nameof(InvitationPage)}");
+                return;
+            }
+
             await _sessionDataHandler.RemoveSessionDataAsync();
             return;
         }
