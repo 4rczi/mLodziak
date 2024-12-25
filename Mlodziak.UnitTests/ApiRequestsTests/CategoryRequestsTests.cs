@@ -39,7 +39,7 @@ namespace Mlodziak.UnitTests.ApiRequestsTests
                 new CategoryModel { Id = 2, Name = "Category2" }
             };
 
-            _mockCategoryApiCalls.Setup(x => x.GetCategoriesAsync(userId, $"Bearer {accessToken}"))
+            _mockCategoryApiCalls.Setup(x => x.GetCategoriesAsync($"Bearer {accessToken}", userId))
                                  .ReturnsAsync(expectedResult);
 
             // Act
@@ -48,7 +48,7 @@ namespace Mlodziak.UnitTests.ApiRequestsTests
             // Assert
             Assert.Equal(expectedResult.Count, result.Count);
             Assert.Equal(expectedResult[0].Name, result[0].Name);
-            _mockCategoryApiCalls.Verify(x => x.GetCategoriesAsync(userId, $"Bearer {accessToken}"), Times.Once);
+            _mockCategoryApiCalls.Verify(x => x.GetCategoriesAsync($"Bearer {accessToken}", userId), Times.Once);
         }
 
         [Fact]
@@ -68,7 +68,7 @@ namespace Mlodziak.UnitTests.ApiRequestsTests
                 },
                 null);
 
-            _mockCategoryApiCalls.Setup(x => x.GetCategoriesAsync(userId, $"Bearer {accessToken}"))
+            _mockCategoryApiCalls.Setup(x => x.GetCategoriesAsync($"Bearer {accessToken}", userId))
                          .ThrowsAsync(apiException);
 
             // Act
@@ -76,7 +76,7 @@ namespace Mlodziak.UnitTests.ApiRequestsTests
 
             // Assert
             Assert.Empty(result);
-            _mockCategoryApiCalls.Verify(x => x.GetCategoriesAsync(userId, $"Bearer {accessToken}"), Times.Once);
+            _mockCategoryApiCalls.Verify(x => x.GetCategoriesAsync($"Bearer {accessToken}", userId), Times.Once);
             _mockApplicationLoggingRequests.Verify(x => x.LogAsync(
             "Warning",
             It.IsAny<string>(),
@@ -100,7 +100,7 @@ namespace Mlodziak.UnitTests.ApiRequestsTests
             var sessionId = "testSession";
             var exception = new Exception("General exception");
 
-            _mockCategoryApiCalls.Setup(x => x.GetCategoriesAsync(userId, $"Bearer {accessToken}"))
+            _mockCategoryApiCalls.Setup(x => x.GetCategoriesAsync($"Bearer {accessToken}", userId ))
                          .ThrowsAsync(exception);
 
             // Act
@@ -108,7 +108,7 @@ namespace Mlodziak.UnitTests.ApiRequestsTests
 
             // Assert
             Assert.Empty(result);
-            _mockCategoryApiCalls.Verify(x => x.GetCategoriesAsync(userId, $"Bearer {accessToken}"), Times.Once);
+            _mockCategoryApiCalls.Verify(x => x.GetCategoriesAsync($"Bearer {accessToken}", userId), Times.Once);
             _mockApplicationLoggingRequests.Verify(x => x.LogAsync(
             "Error",
             It.IsAny<string>(),

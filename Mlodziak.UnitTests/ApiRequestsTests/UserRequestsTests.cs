@@ -40,7 +40,7 @@ namespace Mlodziak.UnitTests.ApiRequestsTests
             var expectedUser = new User { Id = userId };
 
             _mockUserApiCalls
-                .Setup(api => api.GetUserAsync(userId, $"Bearer {accessToken}"))
+                .Setup(api => api.GetUserAsync($"Bearer {accessToken}", userId))
                 .ReturnsAsync(expectedUser);
 
             // Act
@@ -48,7 +48,7 @@ namespace Mlodziak.UnitTests.ApiRequestsTests
 
             // Assert
             Assert.Equal(expectedUser, result);
-            _mockUserApiCalls.Verify(api => api.GetUserAsync(userId, $"Bearer {accessToken}"), Times.Once);
+            _mockUserApiCalls.Verify(api => api.GetUserAsync($"Bearer {accessToken}", userId), Times.Once);
         }
 
         [Fact]
@@ -68,7 +68,7 @@ namespace Mlodziak.UnitTests.ApiRequestsTests
                 null);
 
             _mockUserApiCalls
-                .Setup(api => api.GetUserAsync(userId, $"Bearer {accessToken}"))
+                .Setup(api => api.GetUserAsync($"Bearer {accessToken}", userId))
                 .ThrowsAsync(apiException);
 
             // Act
@@ -76,7 +76,7 @@ namespace Mlodziak.UnitTests.ApiRequestsTests
 
             // Assert
             Assert.Null(result);
-            _mockUserApiCalls.Verify(api => api.GetUserAsync(userId, $"Bearer {accessToken}"), Times.Once);
+            _mockUserApiCalls.Verify(api => api.GetUserAsync($"Bearer {accessToken}", userId), Times.Once);
             _mockApplicationLoggingRequests.Verify(x => x.LogAsync(
             "Warning",
             It.IsAny<string>(),
@@ -100,7 +100,7 @@ namespace Mlodziak.UnitTests.ApiRequestsTests
             var accessToken = "validAccessToken";
 
             _mockUserApiCalls
-                .Setup(api => api.GetUserAsync(userId, $"Bearer {accessToken}"))
+                .Setup(api => api.GetUserAsync($"Bearer {accessToken}", userId))
                 .ThrowsAsync(new Exception("Unexpected error"));
 
             // Act
@@ -108,7 +108,7 @@ namespace Mlodziak.UnitTests.ApiRequestsTests
 
             // Assert
             Assert.Null(result);
-            _mockUserApiCalls.Verify(api => api.GetUserAsync(userId, $"Bearer {accessToken}"), Times.Once);
+            _mockUserApiCalls.Verify(api => api.GetUserAsync($"Bearer {accessToken}", userId), Times.Once);
             _mockApplicationLoggingRequests.Verify(x => x.LogAsync(
             "Error",
             It.IsAny<string>(),

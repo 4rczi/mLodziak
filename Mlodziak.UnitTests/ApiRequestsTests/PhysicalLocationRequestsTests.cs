@@ -44,7 +44,7 @@ namespace Mlodziak.UnitTests.ApiRequestsTests
         };
 
             _mockPhysicalLocationApiCalls
-                .Setup(api => api.GetPhysicalLocationsAsync(userId, categoryId, locationId, $"Bearer {accessToken}"))
+                .Setup(api => api.GetPhysicalLocationsAsync($"Bearer {accessToken}", userId, categoryId, locationId))
                 .ReturnsAsync(physicalLocations);
 
             // Act
@@ -75,7 +75,7 @@ namespace Mlodziak.UnitTests.ApiRequestsTests
                 null);
 
             _mockPhysicalLocationApiCalls
-                .Setup(api => api.GetPhysicalLocationsAsync(userId, categoryId, locationId, $"Bearer {accessToken}"))
+                .Setup(api => api.GetPhysicalLocationsAsync($"Bearer {accessToken}", userId, categoryId, locationId))
                 .ThrowsAsync(apiException);
 
             // Act
@@ -111,7 +111,7 @@ namespace Mlodziak.UnitTests.ApiRequestsTests
             var generalException = new Exception("General error");
 
             _mockPhysicalLocationApiCalls
-                .Setup(api => api.GetPhysicalLocationsAsync(userId, categoryId, locationId, $"Bearer {accessToken}"))
+                .Setup(api => api.GetPhysicalLocationsAsync($"Bearer {accessToken}", userId, categoryId, locationId))
                 .ThrowsAsync(generalException);
 
             // Act

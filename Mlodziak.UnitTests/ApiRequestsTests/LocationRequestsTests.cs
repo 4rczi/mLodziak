@@ -35,7 +35,7 @@ namespace Mlodziak.UnitTests.ApiRequestsTests
             var sessionId = "session123";
             var expectedResult = new List<LocationModel> { new LocationModel { Id = 1, Name = "Location 1" } };
 
-            _mockLocationApiCalls.Setup(x => x.GetLocationModelsAsync($"Bearer {accessToken}", categoryId, userId))
+            _mockLocationApiCalls.Setup(x => x.GetLocationModelsAsync($"Bearer {accessToken}", userId, categoryId))
                                  .ReturnsAsync(expectedResult);
 
             // Act
@@ -63,7 +63,7 @@ namespace Mlodziak.UnitTests.ApiRequestsTests
                 },
                 null);
 
-            _mockLocationApiCalls.Setup(x => x.GetLocationModelsAsync($"Bearer {accessToken}", categoryId, userId))
+            _mockLocationApiCalls.Setup(x => x.GetLocationModelsAsync($"Bearer {accessToken}", userId, categoryId))
                                  .ThrowsAsync(apiException);
 
             // Act
@@ -71,7 +71,7 @@ namespace Mlodziak.UnitTests.ApiRequestsTests
 
             // Assert
             Assert.Empty(result);
-            _mockLocationApiCalls.Verify(x => x.GetLocationModelsAsync($"Bearer {accessToken}", categoryId, userId), Times.Once);
+            _mockLocationApiCalls.Verify(x => x.GetLocationModelsAsync($"Bearer {accessToken}", userId, categoryId), Times.Once);
             _mockApplicationLoggingRequests.Verify(x => x.LogAsync(
             "Warning",
             It.IsAny<string>(),
@@ -97,7 +97,7 @@ namespace Mlodziak.UnitTests.ApiRequestsTests
             var sessionId = "session999";
             var apiException = new Exception("General exception");
 
-            _mockLocationApiCalls.Setup(x => x.GetLocationModelsAsync($"Bearer {accessToken}", categoryId, userId))
+            _mockLocationApiCalls.Setup(x => x.GetLocationModelsAsync($"Bearer {accessToken}", userId, categoryId))
                                  .ThrowsAsync(apiException);
 
             // Act
@@ -105,7 +105,7 @@ namespace Mlodziak.UnitTests.ApiRequestsTests
 
             // Assert
             Assert.Empty(result);
-            _mockLocationApiCalls.Verify(x => x.GetLocationModelsAsync($"Bearer {accessToken}", categoryId, userId), Times.Once);
+            _mockLocationApiCalls.Verify(x => x.GetLocationModelsAsync($"Bearer {accessToken}", userId, categoryId), Times.Once);
             _mockApplicationLoggingRequests.Verify(x => x.LogAsync(
             "Error",
             It.IsAny<string>(),
