@@ -182,6 +182,7 @@ namespace MlodziakApp
             builder.Services.AddSingleton<IGeolocationService, GeolocationService>();
             builder.Services.AddTransient<ITitbitService, TitbitService>();
             builder.Services.AddTransient<IPermissionsService, PermissionsService>();
+            builder.Services.AddTransient<NavigationService>(); 
 
             // Logic         
             builder.Services.AddTransient<IGeolocationDataLoader, GeolocationDataLoader>();

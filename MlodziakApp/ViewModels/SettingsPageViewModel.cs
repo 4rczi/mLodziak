@@ -13,7 +13,7 @@ namespace MlodziakApp.ViewModels
     public partial class SettingsPageViewModel : ObservableObject
     {
         private readonly ISecureStorageService _secureStorageService;
-        private readonly IAuthenticationService _authenticationService;
+        private readonly ISessionService _sessionService;
 
         [ObservableProperty]
         string? userId;
@@ -25,10 +25,10 @@ namespace MlodziakApp.ViewModels
         string? appVersion;
 
 
-        public SettingsPageViewModel(ISecureStorageService secureStorageService, IAuthenticationService authenticationService)
+        public SettingsPageViewModel(ISecureStorageService secureStorageService, ISessionService sessionService)
         {
             _secureStorageService = secureStorageService;
-            _authenticationService = authenticationService;
+            _sessionService = sessionService;
         }
 
         public async Task InitializeAsync()
@@ -44,7 +44,7 @@ namespace MlodziakApp.ViewModels
         [RelayCommand]
         public async Task LogOutAsync()
         {
-            await _authenticationService.LogoutAsync();
+            await _sessionService.HandleInvalidSessionAsync(isLoggedIn:true);
         }
     }
 }

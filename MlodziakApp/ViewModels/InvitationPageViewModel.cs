@@ -12,6 +12,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static Microsoft.Maui.ApplicationModel.Permissions;
 using Plugin.Firebase.CloudMessaging;
+using CommunityToolkit.Mvvm.Messaging;
+using MlodziakApp.Messages;
+using MlodziakApp.Messages.MessageItems;
 
 
 namespace MlodziakApp.ViewModels
@@ -22,6 +25,7 @@ namespace MlodziakApp.ViewModels
         private readonly IAuthenticationService _authenticationService;
         private readonly ITitbitService _titbitService;
         private readonly IPopUpService _popUpService;
+        private readonly NavigationService _navigationService;
 
 
         [ObservableProperty]
@@ -48,18 +52,30 @@ namespace MlodziakApp.ViewModels
         [ObservableProperty]
         double tapToContinueLabelOpacity;
 
+        private FCMPushNotificationPendingMessage? _pendingRedirectionMessage;
+
 
         public InvitationPageViewModel(ISessionService sessionService,
                                        IAuthenticationService authenticationService,
                                        ITitbitService titbitService,
-                                       IPopUpService popUpService)
+                                       IPopUpService popUpService,
+                                       NavigationService navigationService)
         {
             _sessionService = sessionService;
             _authenticationService = authenticationService;
             _titbitService = titbitService;
             _popUpService = popUpService;
+            _navigationService = navigationService;
+
+            WeakReferenceMessenger.Default.Register<FCMPushNotificationPendingMessage>(this, OnFCMPushNotificationPendingMessage);
+            
         }
-     
+
+        private async void OnFCMPushNotificationPendingMessage(object recipient, FCMPushNotificationPendingMessage message)
+        {
+            _pendingRedirectionMessage = message;
+        }
+
         [RelayCommand]
         public async Task LogInAsync()
         {
@@ -81,6 +97,13 @@ namespace MlodziakApp.ViewModels
                 if (!isLoginSuccess)
                 {
                     await ShowInvitationPageAsync();
+                    return;
+                }
+
+                if(_pendingRedirectionMessage != null)
+                {
+                    await _navigationService.NavigateToPhysicalLocationAsync(_pendingRedirectionMessage);
+                    _pendingRedirectionMessage = null;
                     return;
                 }
            

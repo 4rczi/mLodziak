@@ -29,6 +29,7 @@ namespace MlodziakApp.Logic.Notification
         private readonly IServiceProvider _serviceProvider;
         private readonly ILocationRequests _locationRequests;
         private readonly IPhysicalLocationRequests _physicalLocationRequests;
+        private readonly NavigationService _navigationService;
 
 
         public FCMPushNotificationHandler(IApplicationLoggingRequests applicationLogger,
@@ -39,7 +40,8 @@ namespace MlodziakApp.Logic.Notification
                                       ISessionService sessionService,
                                       IServiceProvider serviceProvider,
                                       ILocationRequests locationRequests,
-                                      IPhysicalLocationRequests physicalLocationRequests)
+                                      IPhysicalLocationRequests physicalLocationRequests,
+                                      NavigationService navigationService)
         {
             _applicationLogger = applicationLogger;
             _secureStorageService = secureStorageService;
@@ -52,6 +54,7 @@ namespace MlodziakApp.Logic.Notification
 
             WeakReferenceMessenger.Default.Register<FCMPushNotificationTappedMessage>(this, OnPushNotificationTapped);
             _physicalLocationRequests = physicalLocationRequests;
+            _navigationService = navigationService;
         }
 
         private async void OnPushNotificationTapped(object recipient, FCMPushNotificationTappedMessage message)
@@ -138,19 +141,12 @@ namespace MlodziakApp.Logic.Notification
             if (!isSessionValid)
             {
                 await _sessionService.HandleInvalidSessionAsync(isLoggedIn: true);
+                WeakReferenceMessenger.Default.Send(new FCMPushNotificationPendingMessage(new FCMPushNotificationPendingMessageItem(physicalLocationInfo)));
+                return;
             }
 
-            var locationModel = await _locationRequests.GetSingleLocationModelAsync(accessToken!, int.Parse(physicalLocationInfo.PhysicalLocationId), userId!, sessionId!);
-            var physicalLocationModel = await _physicalLocationRequests.GetSinglePhysicalLocationAsync(accessToken, int.Parse(physicalLocationInfo.PhysicalLocationId), userId, sessionId);
-
-            await Shell.Current.GoToAsync($"//{nameof(ExplorationPage)}/{nameof(MapPage)}");
-            WeakReferenceMessenger.Default.Send(new LocationInfoMessage(new LocationInfoMessageItem(locationModel.Id,
-                                                                                                    locationModel.CategoryId,
-                                                                                                    locationModel.Latitude,
-                                                                                                    locationModel.Longitude,
-                                                                                                    locationModel.ZoomLevel,
-                                                                                                    physicalLocationModel)));
-            
+            await _navigationService.NavigateToPhysicalLocationAsync(new FCMPushNotificationPendingMessage(new FCMPushNotificationPendingMessageItem(physicalLocationInfo)));
+                    
             return;
         }
     }
