@@ -74,7 +74,6 @@
                        Grid.ColumnSpan="2"
                        Grid.Row="9"
                        LineBreakMode="WordWrap" 
-                       Text="{Binding ErrMsg}"
                        TextColor="White" />
             </Grid>
         </VerticalStackLayout>
@@ -86,7 +85,6 @@
               HorizontalOptions="FillAndExpand"
               ZIndex="3">
 
-            <!-- Ensure Gesture Recognizer is set -->
             <Grid.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding LogInCommand}" />
             </Grid.GestureRecognizers>

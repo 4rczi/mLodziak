@@ -26,9 +26,6 @@ namespace MlodziakApp.Logic.Notification
         private readonly IConnectivityService _connectivityService;
         private readonly IPermissionsService _permissionsService;
         private readonly ISessionService _sessionService;
-        private readonly IServiceProvider _serviceProvider;
-        private readonly ILocationRequests _locationRequests;
-        private readonly IPhysicalLocationRequests _physicalLocationRequests;
         private readonly NavigationService _navigationService;
 
 
@@ -38,9 +35,6 @@ namespace MlodziakApp.Logic.Notification
                                       IConnectivityService connectivityService,
                                       IPermissionsService permissionsService,
                                       ISessionService sessionService,
-                                      IServiceProvider serviceProvider,
-                                      ILocationRequests locationRequests,
-                                      IPhysicalLocationRequests physicalLocationRequests,
                                       NavigationService navigationService)
         {
             _applicationLogger = applicationLogger;
@@ -49,13 +43,11 @@ namespace MlodziakApp.Logic.Notification
             _connectivityService = connectivityService;
             _permissionsService = permissionsService;
             _sessionService = sessionService;
-            _serviceProvider = serviceProvider;
-            _locationRequests = locationRequests;
+            _navigationService = navigationService;
 
             WeakReferenceMessenger.Default.Register<FCMPushNotificationTappedMessage>(this, OnPushNotificationTapped);
-            _physicalLocationRequests = physicalLocationRequests;
-            _navigationService = navigationService;
         }
+        
 
         private async void OnPushNotificationTapped(object recipient, FCMPushNotificationTappedMessage message)
         {

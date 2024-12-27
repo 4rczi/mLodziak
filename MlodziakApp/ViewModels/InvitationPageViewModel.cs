@@ -32,9 +32,6 @@ namespace MlodziakApp.ViewModels
         bool isBusy;
 
         [ObservableProperty]
-        string? errMsg;
-
-        [ObservableProperty]
         string titbit;
 
         [ObservableProperty]
@@ -141,7 +138,6 @@ namespace MlodziakApp.ViewModels
 
         private void PrepareInvitationPage()
         {
-            ErrMsg = "";
             InvitationGridVisibility = true;
             TapToContinueLabelVisibility = false;
             ContinueOverlayGridVisibility = false;
