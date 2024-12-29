@@ -25,9 +25,9 @@
                     <DataTemplate>
                         <Frame Margin="5"
                                Padding="5"
-                               BackgroundColor="White">
+                               BackgroundColor="#F4F6FB">
                             <VerticalStackLayout>
-                                <Frame Padding="3">
+                                <Frame Padding="3" BackgroundColor="#F4F6FB">
                                     <Grid x:Name="physicalLocationGrid" ColumnDefinitions="*,Auto,Auto">
                                         <Label Grid.Column="0"
                                                Text="{Binding Name}"
@@ -40,7 +40,7 @@
                                        Aspect="Fill"
                                        HeightRequest="200">
                                 </Image>
-                                <Frame Padding="5">
+                                <Frame Padding="5" BackgroundColor="#F4F6FB">
                                     <StackLayout>
                                         <Label Text="Opis: "></Label>
                                         <Label Text="{Binding Description}"/>
