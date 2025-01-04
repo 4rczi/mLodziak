@@ -285,7 +285,7 @@ namespace DataAccess
                     ImagePath = "Resources/Images/Locations/Poniatowski_Park_01",
                     Latitude = 51.7544114,
                     Longitude = 19.4423864,
-                    ZoomLevel = 16.75f,
+                    ZoomLevel = 0.5f,
                     CreatedDate = DateTime.UtcNow,
                     ModifiedDate = DateTime.UtcNow
                 }

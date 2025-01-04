@@ -30,6 +30,7 @@ using Microsoft.IdentityModel.Tokens;
 
 
 #if ANDROID
+using MlodziakApp.Platforms;
 using MlodziakApp.Platforms.Android.Handlers;
 using Plugin.Firebase.Bundled.Platforms.Android;
 #endif
@@ -208,6 +209,10 @@ namespace MlodziakApp
 
             builder.Services.AddTransient<INotificationHandler, FCMPushNotificationHandler>();
             builder.Services.AddTransient<INotificationHandler, LocalPushNotificationHandler>();
+
+#if ANDROID
+            builder.Services.AddTransient<AndroidNotificationService>();
+#endif
 
 
 #if DEBUG

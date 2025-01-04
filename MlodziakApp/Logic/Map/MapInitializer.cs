@@ -46,7 +46,7 @@ namespace MlodziakApp.Logic.Map
         private void InitializeMapPosition(MauiMap map, double locationLatitude, double locationLongitude, float locationZoomLevel)
         {
             var locationPosition = new Location(locationLatitude, locationLongitude);
-            map.MoveToRegion(MapSpan.FromCenterAndRadius(locationPosition, Distance.FromKilometers(0.5)));
+            map.MoveToRegion(MapSpan.FromCenterAndRadius(locationPosition, Distance.FromKilometers(locationZoomLevel)));
         }
 
         private void InitializeCircles(MauiMap map, List<PhysicalLocationModel> physicalLocationModels)
