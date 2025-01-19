@@ -212,6 +212,8 @@ namespace MlodziakApp
 
 #if ANDROID
             builder.Services.AddTransient<AndroidNotificationService>();
+            builder.Services.AddSingleton<AndroidForegroundService>();
+            builder.Services.AddSingleton<IAndroidForegroundService>(provider => provider.GetRequiredService<AndroidForegroundService>());
 #endif
 
 

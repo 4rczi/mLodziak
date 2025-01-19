@@ -1,35 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.company.MlodziakApp">
 	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:supportsRtl="true" android:label="MlodziakApp">
-
-	<!-- Google API Key -->
-	<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDAMfxz4ppOsE5UVuJudwZSv3SgoDjJUTE"></meta-data>
-
-    <!-- Firebase setup -->
-	<receiver
-        android:name="com.google.firebase.iid.FirebaseInstanceIdInternalReceiver"
-        android:exported="false" />
-	<receiver
-        android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"
-        android:exported="true"
-        android:permission="com.google.android.c2dm.permission.SEND">
-		<intent-filter>
-			<action android:name="com.google.android.c2dm.intent.RECEIVE" />
-			<action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-			<category android:name="${applicationId}" />
-		</intent-filter>
-	</receiver>
-
+		<!-- Google API Key -->
+		<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDAMfxz4ppOsE5UVuJudwZSv3SgoDjJUTE"></meta-data>
+		<!-- Firebase setup -->
+		<receiver android:name="com.google.firebase.iid.FirebaseInstanceIdInternalReceiver" android:exported="false" />
+		<receiver android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver" android:exported="true" android:permission="com.google.android.c2dm.permission.SEND">
+			<intent-filter>
+				<action android:name="com.google.android.c2dm.intent.RECEIVE" />
+				<action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+				<category android:name="${applicationId}" />
+			</intent-filter>
+		</receiver>
+		<receiver android:name="com.company.MlodziakApp.BootReceiver" android:directBootAware="true" android:enabled="true" android:exported="true">
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</receiver>
 	</application>
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 	<uses-feature android:name="android.hardware.location" android:required="true" />
 	<uses-feature android:name="android.hardware.location.gps" android:required="true" />
 	<uses-feature android:name="android.hardware.location.network" android:required="true" />
-
 	<queries>
 		<intent>
 			<action android:name="android.support.customtabs.action.CustomTabsService" />

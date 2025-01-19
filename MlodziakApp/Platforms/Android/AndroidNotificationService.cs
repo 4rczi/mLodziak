@@ -50,7 +50,7 @@ namespace MlodziakApp.Platforms
         public void CreateFCMNotificationChannel(Context context)
         {
             var channelId = $"MlodziakApp.general";
-            var notificationManager = (NotificationManager)context.GetSystemService("notification"); //or notification
+            var notificationManager = (NotificationManager)context.GetSystemService("notification");
             var channel = new NotificationChannel(channelId, "General", NotificationImportance.Default);
             notificationManager.CreateNotificationChannel(channel);
             FirebaseCloudMessagingImplementation.ChannelId = channelId;
