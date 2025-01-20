@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using SharedServices;
 using SharedModels;
 using Microsoft.IdentityModel.Tokens;
+using System.Linq;
 
 namespace API.Controllers
 {
